@@ -1,11 +1,4 @@
 #include "inifile.h"
-//#include <sstream>
-#include <fstream>
-
-//using std::stringstream;
-using std::ifstream;
-using std::ofstream;
-
 
 CIniFile::CIniFile(void)													// Default constructor
 {
@@ -15,18 +8,17 @@ CIniFile::~CIniFile(void)
 {
 }
 
-//template<class out_type, class in_value>
-//out_type convert(const in_value& t)
-//{
-//    stringstream stream;
-//    stream << t;        //向流中传值
-//
-//    out_type result;    //这里存储转换结果
-//    stream >> result;   //向result中写入值
-//
-//    stream.clear();
-//    return result;
-//}
+string ItS(int i)
+{
+    std::stringstream tmp;
+    tmp << i;
+    return tmp.str();
+}
+
+int StI(string str)
+{
+    return atoi(str.c_str());
+}
 
 // replace all old_value with new_value in 'str'
 string& replace_all(string& str, const string& old_value, const string& new_value)   
@@ -160,9 +152,9 @@ bool CIniFile::Save(string FileName, vector<Record>& content)
 			outFile << content[i].Commented;
 
 		if(content[i].Key == "")											// Is this a section?			
-			outFile<< "[" << content[i].Section << "]" << std::endl;		// Then format the section
+			outFile<< "[" << content[i].Section << "]" << endl;				// Then format the section
 		else
-			outFile << content[i].Key << "=" << content[i].Value << std::endl;	// Else format a key/value
+			outFile << content[i].Key << "=" << content[i].Value << endl;	// Else format a key/value
     }
 
     outFile.close();														// Close the file
@@ -468,7 +460,7 @@ bool CIniFile::RenameSection(string OldSectionName, string NewSectionName, strin
 {
     vector<Record> content;												    // Holds the current record
 
-    if (!SectionExists(NewSectionName, FileName) && Load(FileName, content))// Make sure the file is loaded
+    if (Load(FileName, content))											// Make sure the file is loaded
     {
         for (vector<Record>::iterator iter = content.begin();
             iter < content.end(); iter++)									// Loop through the records
@@ -476,7 +468,6 @@ bool CIniFile::RenameSection(string OldSectionName, string NewSectionName, strin
             if (iter->Section == OldSectionName)							// Is this the OldSectionName?
                 iter->Section = NewSectionName;							    // Now its the NewSectionName
         }
-
         return Save(FileName, content);									    // Save
     }
 

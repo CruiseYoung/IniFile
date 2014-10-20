@@ -1,11 +1,10 @@
 // TestCIniFile::cpp : Defines the entry point for the console application.
 //
-#include "IniFile.h"
-#include <tchar.h>
+#include "stdafx.h"
 #include <string>
 #include <vector>
-
 using namespace std;
+#include "IniFile.h"
 
 void Show(string FileName)
 {
@@ -216,12 +215,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "CIniFile::Content(FileName);" << endl << endl;
 	cout << "The contents of the file throughout this demo have used this function to display the contents below" << endl;
 	Show(FileName);
-
-    string str_num = "555";
-    cout << convert<int>(str_num) << endl;
-
-    float f_num = 666.0f;
-    cout << convert<string>(f_num) << endl;
 
 	return 0;
 }
