@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestIniFile", "TestIniFile.vcxproj", "{E2A9C5EB-B537-482C-9C08-0790A8881377}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IniFile_Object", "IniFile_Object\project\IniFile_Object.vcxproj", "{380775E2-E9F1-4B8A-AFF9-CBCCB91FA9FA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IniFile_Static", "IniFile_Static\project\IniFile_Static.vcxproj", "{E2A9C5EB-B537-482C-9C08-0790A8881377}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,6 +13,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{380775E2-E9F1-4B8A-AFF9-CBCCB91FA9FA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{380775E2-E9F1-4B8A-AFF9-CBCCB91FA9FA}.Debug|Win32.Build.0 = Debug|Win32
+		{380775E2-E9F1-4B8A-AFF9-CBCCB91FA9FA}.Release|Win32.ActiveCfg = Release|Win32
+		{380775E2-E9F1-4B8A-AFF9-CBCCB91FA9FA}.Release|Win32.Build.0 = Release|Win32
 		{E2A9C5EB-B537-482C-9C08-0790A8881377}.Debug|Win32.ActiveCfg = Debug|Win32
 		{E2A9C5EB-B537-482C-9C08-0790A8881377}.Debug|Win32.Build.0 = Debug|Win32
 		{E2A9C5EB-B537-482C-9C08-0790A8881377}.Release|Win32.ActiveCfg = Release|Win32

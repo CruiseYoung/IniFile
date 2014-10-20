@@ -1,3 +1,7 @@
+IniFile_Static项目是修复了原工程中的bug
+IniFile_Object是将项目更改为类对象的方式，减少重复加载记录(Load)的操作。
+
+原工程说明见以下说明：
 # CIniFile
 
 [CIniFile Class for C++ - A robust cross platform INI file class][url]
