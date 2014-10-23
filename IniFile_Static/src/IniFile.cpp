@@ -261,10 +261,10 @@ vector<CIniFile::Record> CIniFile::GetRecord(string KeyName, string SectionName,
 
 string CIniFile::GetValue(string KeyName, string SectionName, string FileName)
 {
-    vector<Record> content = GetRecord(KeyName, SectionName, FileName);	    // Get the Record
+    vector<Record> record = GetRecord(KeyName, SectionName, FileName);	    // Get the Record
 
-    if (!content.empty())													// Make sure there is a value to return
-        return content[0].Value;											// And return the value
+    if (!record.empty())													// Make sure there is a value to return
+        return record[0].Value;												// And return the value
 
     return "";																// No value was found
 }

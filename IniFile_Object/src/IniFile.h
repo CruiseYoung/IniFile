@@ -53,6 +53,9 @@ public:
     CIniFile(string FileName);
     virtual ~CIniFile(void);
 
+public:
+    void SetFileName(string FileName);
+
     bool FileExist();
     bool Create();
 
@@ -65,28 +68,28 @@ public:
     bool SectionExists(string SectionName);
     bool RecordExists(string KeyName, string SectionName);
 
-    bool AddSection(string SectionName);
-    bool SetValue(string KeyName, string Value, string SectionName);
+    bool AddSection(string SectionName, bool Saving = true);
+    bool SetValue(string KeyName, string Value, string SectionName, bool Saving = true);
 
-    bool DeleteSection(string SectionName);
-    bool DeleteRecord(string KeyName, string SectionName);
+    bool DeleteSection(string SectionName, bool Saving = true);
+    bool DeleteRecord(string KeyName, string SectionName, bool Saving = true);
 
-    bool RenameSection(string OldSectionName, string NewSectionName);
-    bool Sort(bool Descending);
+    bool RenameSection(string OldSectionName, string NewSectionName, bool Saving = true);
+    bool Sort(bool Descending, bool Saving = true);
 
-    bool SetSectionComments(string Comments, string SectionName);
-    bool SetRecordComments(string Comments, string KeyName, string SectionName);
+    bool SetSectionComments(string Comments, string SectionName, bool Saving = true);
+    bool SetRecordComments(string Comments, string KeyName, string SectionName, bool Saving = true);
 
-    bool CommentSection(char CommentChar, string SectionName);
-    bool CommentRecord(CommentChar cc, string KeyName, string SectionName);
+    bool CommentSection(char CommentChar, string SectionName, bool Saving = true);
+    bool CommentRecord(CommentChar cc, string KeyName, string SectionName, bool Saving = true);
 
-    bool UnCommentSection(string SectionName);
-    bool UnCommentRecord(string KeyName, string SectionName);
+    bool UnCommentSection(string SectionName, bool Saving = true);
+    bool UnCommentRecord(string KeyName, string SectionName, bool Saving = true);
 
+	bool Save();
 private:
 	vector<Record> GetSections();
 	bool Load();	
-	bool Save();
 
 	struct RecordSectionIs : std::unary_function<Record, bool>
 	{
@@ -147,8 +150,6 @@ private:
 
 private:
     string m_FileName;
-    //bool m_Descending;
+    bool m_Loaded;
     vector<Record> m_content;
-public:
-    void SetFileName(string FileName);
 };

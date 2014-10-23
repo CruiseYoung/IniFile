@@ -223,5 +223,8 @@ int _tmain(int argc, _TCHAR* argv[])
     float f_num = 666.0f;
     cout << convert<string>(f_num) << endl;
 
+    system("PAUSE");
+    system("cls");
+
 	return 0;
 }
