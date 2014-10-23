@@ -26,7 +26,6 @@ void Show(CIniFile& IniFile)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-
     string str_num = "555";
     cout << convert<int>(str_num) << endl;
 
@@ -227,5 +226,5 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "The contents of the file throughout this demo have used this function to display the contents below" << endl;
 	Show(IniFile);
 
-    return 0;
+	return 0;
 }
