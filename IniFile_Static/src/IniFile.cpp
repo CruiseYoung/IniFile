@@ -15,19 +15,6 @@ CIniFile::~CIniFile(void)
 {
 }
 
-//template<class out_type, class in_value>
-//out_type convert(const in_value& t)
-//{
-//    stringstream stream;
-//    stream << t;        //向流中传值
-//
-//    out_type result;    //这里存储转换结果
-//    stream >> result;   //向result中写入值
-//
-//    stream.clear();
-//    return result;
-//}
-
 // replace all old_value with new_value in 'str'
 string& replace_all(string& str, const string& old_value, const string& new_value)   
 {   

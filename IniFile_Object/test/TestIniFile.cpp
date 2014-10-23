@@ -26,6 +26,16 @@ void Show(CIniFile& IniFile)
 
 int _tmain(int argc, _TCHAR* argv[])
 {
+
+    string str_num = "555";
+    cout << convert<int>(str_num) << endl;
+
+    float f_num = 666.0f;
+    cout << convert<string>(f_num) << endl;
+
+    system("PAUSE");
+    system("cls");
+
 	string FileName = "test.ini";
     CIniFile IniFile(FileName);
 
@@ -217,14 +227,5 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "The contents of the file throughout this demo have used this function to display the contents below" << endl;
 	Show(IniFile);
 
-    string str_num = "555";
-    cout << convert<int>(str_num) << endl;
-
-    float f_num = 666.0f;
-    cout << convert<string>(f_num) << endl;
-
-    system("PAUSE");
-    system("cls");
-
-	return 0;
+    return 0;
 }

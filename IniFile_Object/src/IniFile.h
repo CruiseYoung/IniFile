@@ -14,11 +14,8 @@ using std::stringstream;
 
 //using namespace std;
 
-//template<class out_type, class in_value>
-//out_type convert(const in_value& t);
-
 template<class out_type, class in_value>
-out_type convert(const in_value& t)
+static out_type convert(const in_value& t)
 {
     stringstream stream;
     stream << t;
