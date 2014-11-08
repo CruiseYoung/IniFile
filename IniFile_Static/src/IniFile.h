@@ -17,13 +17,17 @@ using std::stringstream;
 template<class out_type, class in_value>
 static out_type convert(const in_value& t)
 {
-    stringstream stream;
-    stream << t;
-
     out_type result;
-    stream >> result;
 
-    stream.clear();
+    try
+    {
+        stringstream stream;
+        stream << t;
+        stream >> result;
+        stream.clear();
+    }
+    catch (...) {}
+
     return result;
 }
 
