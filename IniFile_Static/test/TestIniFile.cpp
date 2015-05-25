@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void Show(string FileName)
+void Show(const string& FileName)
 {
 	cout << endl 
 		 << "++++++++++++++++++++++++++++++++++++++++"
@@ -35,8 +35,8 @@ int _tmain(int argc, _TCHAR* argv[])
     system("PAUSE");
     system("cls");
 
-	//CIniFile IniFile;
 	string FileName = "test.ini";
+	//CIniFile IniFile;
 
 	// Create a new file
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
