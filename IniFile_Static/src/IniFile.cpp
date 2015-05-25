@@ -1,10 +1,5 @@
 #include "IniFile.h"
-//#include <sstream>
 #include <fstream>
-
-//using std::stringstream;
-using std::ifstream;
-using std::ofstream;
 
 
 CIniFile::CIniFile(void)													// Default constructor
@@ -16,12 +11,12 @@ CIniFile::~CIniFile(void)
 }
 
 // replace all old_value with new_value in 'str'
-string& replace_all(string& str, const string& old_value, const string& new_value)   
+std::string& replace_all(std::string& str, const std::string& old_value, const std::string& new_value)
 {   
 	while (true)
 	{   
-		string::size_type pos(0);   
-		if((pos = str.find(old_value)) != string::npos)   
+		std::string::size_type pos(0);
+		if ((pos = str.find(old_value)) != std::string::npos)
 			str.replace(pos,old_value.length(),new_value);   
 		else
 			break;   
@@ -32,7 +27,7 @@ string& replace_all(string& str, const string& old_value, const string& new_valu
 // A function to trim whitespace from both sides of a given string
 void Trim(std::string& str, const std::string & ChrsToTrim = " \t\n\r", int TrimDir = 0)
 {
-    size_t startIndex = str.find_first_not_of(ChrsToTrim);
+    std::size_t startIndex = str.find_first_not_of(ChrsToTrim);
     if (startIndex == std::string::npos)
     {
         str.erase();
@@ -62,18 +57,18 @@ void Trim(std::string& str, const std::string & ChrsToTrim = " \t\n\r", int Trim
 //}
 
 // A function to transform a string to uppercase if neccessary
-//void UCase(string& str, bool ucase)
+//void UCase(std::string& str, bool ucase)
 //{
 //	if(ucase)
 //		transform(str.begin(), str.end(), str.begin(), toupper);
 //}
 
-bool CIniFile::Load(string FileName, vector<Record>& content)
+bool CIniFile::Load(const string& FileName, vector<Record>& content)
 {
     string s;																// Holds the current line from the ini file
     string CurrentSection;												    // Holds the current section name
 
-    ifstream inFile(FileName.c_str());									    // Create an input filestream
+	std::ifstream inFile(FileName.c_str());									// Create an input filestream
     if (!inFile.is_open())
         return false;									                    // If the input file doesn't open, then return
     content.clear();														// Clear the content vector
@@ -134,9 +129,9 @@ bool CIniFile::Load(string FileName, vector<Record>& content)
     return true;
 }
 
-bool CIniFile::Save(string FileName, vector<Record>& content)
+bool CIniFile::Save(const string& FileName, vector<Record>& content)
 {
-    ofstream outFile(FileName.c_str());									    // Create an output filestream
+	std::ofstream outFile(FileName.c_str());								// Create an output filestream
     if (!outFile.is_open())
         return false;									                    // If the output file doesn't open, then return
 
@@ -156,7 +151,7 @@ bool CIniFile::Save(string FileName, vector<Record>& content)
     return true;
 }
 
-bool CIniFile::FileExist(string FileName)
+bool CIniFile::FileExist(const string& FileName)
 {
     struct stat stFileInfo;
 
@@ -166,7 +161,7 @@ bool CIniFile::FileExist(string FileName)
     return false;
 }
 
-bool CIniFile::Create(string FileName)
+bool CIniFile::Create(const string& FileName)
 {
     vector<Record> content;												    // Create empty content
     if (FileExist(FileName))
@@ -175,7 +170,7 @@ bool CIniFile::Create(string FileName)
     return Save(FileName, content);										    // Save
 }
 
-vector<string> CIniFile::GetSectionNames(string FileName)
+std::vector<std::string> CIniFile::GetSectionNames(const string& FileName)
 {
     vector<string> data;													// Holds the return data
     vector<Record> content;												    // Holds the current record
@@ -192,7 +187,7 @@ vector<string> CIniFile::GetSectionNames(string FileName)
     return data;															// Return the data
 }
 
-vector<CIniFile::Record> CIniFile::GetSections(string FileName)
+std::vector<CIniFile::Record> CIniFile::GetSections(const string& FileName)
 {
     vector<Record> data;													// Holds the return data
     vector<Record> content;												    // Holds the current record
@@ -209,7 +204,7 @@ vector<CIniFile::Record> CIniFile::GetSections(string FileName)
     return data;															// Return the data
 }
 
-vector<CIniFile::Record> CIniFile::GetSection(string SectionName, string FileName)
+std::vector<CIniFile::Record> CIniFile::GetSection(const string& SectionName, const string& FileName)
 {
     vector<Record> data;													// Holds the return data
     vector<Record> content;												    // Holds the current record
@@ -227,7 +222,7 @@ vector<CIniFile::Record> CIniFile::GetSection(string SectionName, string FileNam
     return data;															// Return the data
 }
 
-vector<CIniFile::Record> CIniFile::GetRecord(string KeyName, string SectionName, string FileName)
+std::vector<CIniFile::Record> CIniFile::GetRecord(const string& KeyName, const string& SectionName, const string& FileName)
 {
     vector<Record> data;													// Holds the return data
     vector<Record> content;												    // Holds the current record
@@ -246,7 +241,7 @@ vector<CIniFile::Record> CIniFile::GetRecord(string KeyName, string SectionName,
     return data;															// Return the Record
 }
 
-string CIniFile::GetValue(string KeyName, string SectionName, string FileName)
+std::string CIniFile::GetValue(const string& KeyName, const string& SectionName, const string& FileName)
 {
     vector<Record> record = GetRecord(KeyName, SectionName, FileName);	    // Get the Record
 
@@ -256,7 +251,7 @@ string CIniFile::GetValue(string KeyName, string SectionName, string FileName)
     return "";																// No value was found
 }
 
-string CIniFile::Content(string FileName)
+std::string CIniFile::Content(const string& FileName)
 {
     string s = "";															// Hold our return string
     vector<Record> content;												    // Holds the current record
@@ -283,7 +278,7 @@ string CIniFile::Content(string FileName)
     return "";
 }
 
-bool CIniFile::SectionExists(string SectionName, string FileName)
+bool CIniFile::SectionExists(const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -302,7 +297,7 @@ bool CIniFile::SectionExists(string SectionName, string FileName)
     return true;															// The Section was found
 }
 
-bool CIniFile::RecordExists(string KeyName, string SectionName, string FileName)
+bool CIniFile::RecordExists(const string& KeyName, const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -321,7 +316,7 @@ bool CIniFile::RecordExists(string KeyName, string SectionName, string FileName)
     return true;															// The Section/Key was found
 }
 
-bool CIniFile::AddSection(string SectionName, string FileName)
+bool CIniFile::AddSection(const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -350,7 +345,7 @@ bool CIniFile::AddSection(string SectionName, string FileName)
     return false;															// The file did not open
 }
 
-bool CIniFile::SetValue(string KeyName, string Value, string SectionName, string FileName)
+bool CIniFile::SetValue(const string& KeyName, const string& Value, const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -414,7 +409,7 @@ bool CIniFile::SetValue(string KeyName, string Value, string SectionName, string
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::DeleteSection(string SectionName, string FileName)
+bool CIniFile::DeleteSection(const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -431,7 +426,7 @@ bool CIniFile::DeleteSection(string SectionName, string FileName)
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::DeleteRecord(string KeyName, string SectionName, string FileName)
+bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -451,7 +446,7 @@ bool CIniFile::DeleteRecord(string KeyName, string SectionName, string FileName)
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::RenameSection(string OldSectionName, string NewSectionName, string FileName)
+bool CIniFile::RenameSection(const string& OldSectionName, const string& NewSectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -471,7 +466,7 @@ bool CIniFile::RenameSection(string OldSectionName, string NewSectionName, strin
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::Sort(string FileName, bool Descending)
+bool CIniFile::Sort(const string& FileName, bool Descending)
 {
     vector<CIniFile::Record> content;										// Used to hold the sorted content
     vector<CIniFile::Record> sections = GetSections(FileName);			    // Get a list of Sections
@@ -503,8 +498,9 @@ bool CIniFile::Sort(string FileName, bool Descending)
     return false;															// There were no sections
 }
 
-bool CIniFile::SetSectionComments(string Comments, string SectionName, string FileName)
+bool CIniFile::SetSectionComments(const string& Comments, const string& SectionName, const string& FileName)
 {
+	string comments = Comments;
     vector<Record> content;												    // Holds the current record
 
     if (Load(FileName, content))											// Make sure the file is loaded
@@ -517,10 +513,10 @@ bool CIniFile::SetSectionComments(string Comments, string SectionName, string Fi
                 if (Comments.size() >= 2)									// Is there a comment?
                 {
                     if (Comments.substr(Comments.size() - 2) != "\n")		// Does the string end in a newline?
-                        Comments += "\n";									// If not, add one
+						comments += "\n";									// If not, add one
                 }
 
-                iter->Comments = Comments;								    // Set the comments
+				iter->Comments = comments;								    // Set the comments
                 return Save(FileName, content);							    // Save
             }
         }
@@ -529,8 +525,9 @@ bool CIniFile::SetSectionComments(string Comments, string SectionName, string Fi
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::SetRecordComments(string Comments, string KeyName, string SectionName, string FileName)
+bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, const string& FileName)
 {
+	string comments = Comments;
     vector<Record> content;												    // Holds the current record
 
     if (Load(FileName, content))											// Make sure the file is loaded
@@ -545,17 +542,17 @@ bool CIniFile::SetRecordComments(string Comments, string KeyName, string Section
         if (Comments.size() >= 2)											// Is there a comment?
         {
             if (Comments.substr(Comments.size() - 2) != "\n")				// Does the string end in a newline?
-                Comments += "\n";											// If not, add one
+				comments += "\n";											// If not, add one
         }
 
-        iter->Comments = Comments;										    // Set the comments
+		iter->Comments = comments;										    // Set the comments
         return Save(FileName, content);									    // Save
     }
 
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::CommentSection(char CommentChar, string SectionName, string FileName)
+bool CIniFile::CommentSection(char CommentChar, const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -572,7 +569,7 @@ bool CIniFile::CommentSection(char CommentChar, string SectionName, string FileN
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::CommentRecord(CommentChar cc, string KeyName, string SectionName, string FileName)
+bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -592,7 +589,7 @@ bool CIniFile::CommentRecord(CommentChar cc, string KeyName, string SectionName,
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::UnCommentSection(string SectionName, string FileName)
+bool CIniFile::UnCommentSection(const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 
@@ -609,7 +606,7 @@ bool CIniFile::UnCommentSection(string SectionName, string FileName)
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::UnCommentRecord(string KeyName, string SectionName, string FileName)
+bool CIniFile::UnCommentRecord(const string& KeyName, const string& SectionName, const string& FileName)
 {
     vector<Record> content;												    // Holds the current record
 

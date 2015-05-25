@@ -8,12 +8,8 @@
 
 #include <sstream>
 #include <sys/stat.h>
-using std::vector;
-using std::string;
-using std::stringstream;
 
-//using namespace std;
-
+// Suggest using the standard library of STD: : to_string and STD: : sto... A series of function 
 template<class out_type, class in_value>
 static out_type convert(const in_value& t)
 {
@@ -21,7 +17,7 @@ static out_type convert(const in_value& t)
 
     try
     {
-        stringstream stream;
+		std::stringstream stream;
         stream << t;
         stream >> result;
         stream.clear();
@@ -34,6 +30,10 @@ static out_type convert(const in_value& t)
 
 class CIniFile
 {
+public:
+	template<typename T> using vector = std::vector < T > ;
+	using string = std::string;
+
 public:
     struct Record
     {
@@ -51,41 +51,41 @@ public:
     };
 
     CIniFile(void);
-    CIniFile(string FileName);
+    CIniFile(const string& FileName);
     virtual ~CIniFile(void);
 
 public:
-    void SetFileName(string FileName);
+    void SetFileName(const string& FileName);
 
     bool FileExist();
     bool Create();
 
     vector<string> GetSectionNames();
-    vector<Record> GetSection(string SectionName);
-    vector<Record> GetRecord(string KeyName, string SectionName);
-    string GetValue(string KeyName, string SectionName);
+    vector<Record> GetSection(const string& SectionName);
+    vector<Record> GetRecord(const string& KeyName, const string& SectionName);
+    string GetValue(const string& KeyName, const string& SectionName);
     string Content();
 
-    bool SectionExists(string SectionName);
-    bool RecordExists(string KeyName, string SectionName);
+    bool SectionExists(const string& SectionName);
+    bool RecordExists(const string& KeyName, const string& SectionName);
 
-    bool AddSection(string SectionName, bool Saving = true);
-    bool SetValue(string KeyName, string Value, string SectionName, bool Saving = true);
+    bool AddSection(const string& SectionName, bool Saving = true);
+    bool SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving = true);
 
-    bool DeleteSection(string SectionName, bool Saving = true);
-    bool DeleteRecord(string KeyName, string SectionName, bool Saving = true);
+    bool DeleteSection(const string& SectionName, bool Saving = true);
+    bool DeleteRecord(const string& KeyName, const string& SectionName, bool Saving = true);
 
-    bool RenameSection(string OldSectionName, string NewSectionName, bool Saving = true);
+    bool RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving = true);
     bool Sort(bool Descending, bool Saving = true);
 
-    bool SetSectionComments(string Comments, string SectionName, bool Saving = true);
-    bool SetRecordComments(string Comments, string KeyName, string SectionName, bool Saving = true);
+    bool SetSectionComments(const string& Comments, const string& SectionName, bool Saving = true);
+    bool SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving = true);
 
-    bool CommentSection(char CommentChar, string SectionName, bool Saving = true);
-    bool CommentRecord(CommentChar cc, string KeyName, string SectionName, bool Saving = true);
+    bool CommentSection(char CommentChar, const string& SectionName, bool Saving = true);
+    bool CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving = true);
 
-    bool UnCommentSection(string SectionName, bool Saving = true);
-    bool UnCommentRecord(string KeyName, string SectionName, bool Saving = true);
+    bool UnCommentSection(const string& SectionName, bool Saving = true);
+    bool UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving = true);
 
 	bool Save();
 private:

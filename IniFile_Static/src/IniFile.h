@@ -8,12 +8,8 @@
 
 #include <sstream>
 #include <sys/stat.h>
-using std::vector;
-using std::string;
-using std::stringstream;
 
-//using namespace std;
-
+// Suggest using the standard library of STD: : to_string and STD: : sto... A series of function 
 template<class out_type, class in_value>
 static out_type convert(const in_value& t)
 {
@@ -21,7 +17,7 @@ static out_type convert(const in_value& t)
 
     try
     {
-        stringstream stream;
+		std::stringstream stream;
         stream << t;
         stream >> result;
         stream.clear();
@@ -34,6 +30,10 @@ static out_type convert(const in_value& t)
 
 class CIniFile
 {
+public:
+	template<typename T> using vector = std::vector < T > ;
+	using string = std::string;
+
 public:
     struct Record
     {
@@ -53,40 +53,40 @@ public:
     CIniFile(void);
     virtual ~CIniFile(void);
 
-    static bool FileExist(string FileName);
-    static bool Create(string FileName);
+    static bool FileExist(const string& FileName);
+    static bool Create(const string& FileName);
 
-    static vector<string> GetSectionNames(string FileName);
-    static vector<Record> GetSection(string SectionName, string FileName);
-    static vector<Record> GetRecord(string KeyName, string SectionName, string FileName);
-    static string GetValue(string KeyName, string SectionName, string FileName);
-    static string Content(string FileName);
+    static vector<string> GetSectionNames(const string& FileName);
+    static vector<Record> GetSection(const string& SectionName, const string& FileName);
+    static vector<Record> GetRecord(const string& KeyName, const string& SectionName, const string& FileName);
+    static string GetValue(const string& KeyName, const string& SectionName, const string& FileName);
+    static string Content(const string& FileName);
 
-    static bool SectionExists(string SectionName, string FileName);
-    static bool RecordExists(string KeyName, string SectionName, string FileName);
+    static bool SectionExists(const string& SectionName, const string& FileName);
+    static bool RecordExists(const string& KeyName, const string& SectionName, const string& FileName);
 
-    static bool AddSection(string SectionName, string FileName);
-    static bool SetValue(string KeyName, string Value, string SectionName, string FileName);
+    static bool AddSection(const string& SectionName, const string& FileName);
+    static bool SetValue(const string& KeyName, const string& Value, const string& SectionName, const string& FileName);
 
-    static bool DeleteSection(string SectionName, string FileName);
-    static bool DeleteRecord(string KeyName, string SectionName, string FileName);
+    static bool DeleteSection(const string& SectionName, const string& FileName);
+    static bool DeleteRecord(const string& KeyName, const string& SectionName, const string& FileName);
 
-    static bool RenameSection(string OldSectionName, string NewSectionName, string FileName);
-    static bool Sort(string FileName, bool Descending);
+    static bool RenameSection(const string& OldSectionName, const string& NewSectionName, const string& FileName);
+    static bool Sort(const string& FileName, bool Descending);
 
-    static bool SetSectionComments(string Comments, string SectionName, string FileName);
-    static bool SetRecordComments(string Comments, string KeyName, string SectionName, string FileName);
+    static bool SetSectionComments(const string& Comments, const string& SectionName, const string& FileName);
+    static bool SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, const string& FileName);
 
-    static bool CommentSection(char CommentChar, string SectionName, string FileName);
-    static bool CommentRecord(CommentChar cc, string KeyName, string SectionName, string FileName);
+    static bool CommentSection(char CommentChar, const string& SectionName, const string& FileName);
+    static bool CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, const string& FileName);
 
-    static bool UnCommentSection(string SectionName, string FileName);
-    static bool UnCommentRecord(string KeyName, string SectionName, string FileName);
+    static bool UnCommentSection(const string& SectionName, const string& FileName);
+    static bool UnCommentRecord(const string& KeyName, const string& SectionName, const string& FileName);
 
 private:
-	static vector<Record> GetSections(string FileName);
-	static bool Load(string FileName, vector<Record>& content);	
-	static bool Save(string FileName, vector<Record>& content);
+	static vector<Record> GetSections(const string& FileName);
+	static bool Load(const string& FileName, vector<Record>& content);	
+	static bool Save(const string& FileName, vector<Record>& content);
 
 	struct RecordSectionIs : std::unary_function<Record, bool>
 	{
