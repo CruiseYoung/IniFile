@@ -69,23 +69,23 @@ public:
     bool SectionExists(const string& SectionName);
     bool RecordExists(const string& KeyName, const string& SectionName);
 
-    bool AddSection(const string& SectionName, bool Saving = true);
-    bool SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving = true);
+    bool AddSection(const string& SectionName, bool Saving = false);
+    bool SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving = false);
 
-    bool DeleteSection(const string& SectionName, bool Saving = true);
-    bool DeleteRecord(const string& KeyName, const string& SectionName, bool Saving = true);
+    bool DeleteSection(const string& SectionName, bool Saving = false);
+    bool DeleteRecord(const string& KeyName, const string& SectionName, bool Saving = false);
 
-    bool RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving = true);
-    bool Sort(bool Descending, bool Saving = true);
+    bool RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving = false);
+    bool Sort(bool Descending, bool Saving = false);
 
-    bool SetSectionComments(const string& Comments, const string& SectionName, bool Saving = true);
-    bool SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving = true);
+    bool SetSectionComments(const string& Comments, const string& SectionName, bool Saving = false);
+    bool SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving = false);
 
-    bool CommentSection(char CommentChar, const string& SectionName, bool Saving = true);
-    bool CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving = true);
+    bool CommentSection(char CommentChar, const string& SectionName, bool Saving = false);
+    bool CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving = false);
 
-    bool UnCommentSection(const string& SectionName, bool Saving = true);
-    bool UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving = true);
+    bool UnCommentSection(const string& SectionName, bool Saving = false);
+    bool UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving = false);
 
 	bool Save();
 private:

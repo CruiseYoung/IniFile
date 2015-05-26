@@ -347,7 +347,7 @@ bool CIniFile::RecordExists(const string& KeyName, const string& SectionName)
     return true;															// The Section/Key was found
 }
 
-bool CIniFile::AddSection(const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::AddSection(const string& SectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
@@ -379,7 +379,7 @@ bool CIniFile::AddSection(const string& SectionName, bool Saving/* = true*/)
     return false;															// The file did not open
 }
 
-bool CIniFile::SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
@@ -452,7 +452,7 @@ bool CIniFile::SetValue(const string& KeyName, const string& Value, const string
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::DeleteSection(const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::DeleteSection(const string& SectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
@@ -472,7 +472,7 @@ bool CIniFile::DeleteSection(const string& SectionName, bool Saving/* = true*/)
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
@@ -495,7 +495,7 @@ bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, bo
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving/* = true*/)
+bool CIniFile::RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
@@ -517,7 +517,7 @@ bool CIniFile::RenameSection(const string& OldSectionName, const string& NewSect
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::Sort(bool Descending, bool Saving/* = true*/)
+bool CIniFile::Sort(bool Descending, bool Saving/* = false*/)
 {
     vector<CIniFile::Record> content;										// Used to hold the sorted content
     vector<CIniFile::Record> sections = GetSections();			            // Get a list of Sections
@@ -556,7 +556,7 @@ bool CIniFile::Sort(bool Descending, bool Saving/* = true*/)
     return false;															// There were no sections
 }
 
-bool CIniFile::SetSectionComments(const string& Comments, const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::SetSectionComments(const string& Comments, const string& SectionName, bool Saving/* = false*/)
 {
 	string comments = Comments;
     vector<Record>& content = m_content;									// Holds the current record
@@ -586,7 +586,7 @@ bool CIniFile::SetSectionComments(const string& Comments, const string& SectionN
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving/* = false*/)
 {
 	string comments = Comments;
     vector<Record>& content = m_content;									// Holds the current record
@@ -616,7 +616,7 @@ bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, 
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::CommentSection(char CommentChar, const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::CommentSection(char CommentChar, const string& SectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
@@ -636,7 +636,7 @@ bool CIniFile::CommentSection(char CommentChar, const string& SectionName, bool 
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
@@ -659,7 +659,7 @@ bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::UnCommentSection(const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::UnCommentSection(const string& SectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
@@ -679,7 +679,7 @@ bool CIniFile::UnCommentSection(const string& SectionName, bool Saving/* = true*
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving/* = true*/)
+bool CIniFile::UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving/* = false*/)
 {
     vector<Record>& content = m_content;									// Holds the current record
 
