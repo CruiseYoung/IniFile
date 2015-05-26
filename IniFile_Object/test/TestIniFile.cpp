@@ -226,5 +226,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "The contents of the file throughout this demo have used this function to display the contents below" << endl;
 	Show(IniFile);
 
+	IniFile.Save();
+
 	return 0;
 }
