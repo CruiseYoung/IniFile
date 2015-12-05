@@ -1,13 +1,11 @@
 // TestCIniFile::cpp : Defines the entry point for the console application.
 //
 #include "../src/IniFile.h"
-#include <tchar.h>
-#include <string>
-#include <vector>
+#include <iostream>
 
 using namespace std;
 
-void Show(const string& FileName)
+void Show(string FileName)
 {
 	cout << endl 
 		 << "++++++++++++++++++++++++++++++++++++++++"
@@ -24,7 +22,7 @@ void Show(const string& FileName)
 	system("cls");
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
     string str_num = "555";
     cout << convert<int>(str_num) << endl;
@@ -36,7 +34,6 @@ int _tmain(int argc, _TCHAR* argv[])
     system("cls");
 
 	string FileName = "test.ini";
-	//CIniFile IniFile;
 
 	// Create a new file
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
@@ -91,10 +88,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to get a list of sections" << endl << endl;
 	cout << "CIniFile::GetSectionNames(FileName);" << endl << endl;
-	vector<string> s = CIniFile::GetSectionNames(FileName);
-	cout << "The sections are returned as a std::vector<std::string>\n\n";
-	for(int i=0; i < (int)s.size(); i++)
-		cout << s[i].c_str() << endl;
+	list<string> s = CIniFile::GetSectionNames(FileName);
+	cout << "The sections are returned as a std::list<std::string>\n\n";
+	for (list<string>::iterator iter = s.begin(); iter != s.end(); ++iter)
+		cout << iter->c_str() << endl;
 	Show(FileName);
 
 	// Section Exists
@@ -182,7 +179,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "Attempting to comment the record MyKey" << endl << endl;
 	cout << "(Note that both # and ; are recognized as commented lines by CIniFile)" << endl << endl;
 	cout << "CIniFile::CommentRecord(CIniFile::CommentChar::Pound,\"MyKey\",\"YourSection\",FileName);" << endl << endl;
- 	if (CIniFile::CommentRecord(CIniFile::CommentChar::Pound,"MyKey","YourSection",FileName)) cout << "Record was successfully commented" << endl << endl;
+ 	if (CIniFile::CommentRecord(CIniFile::Pound,"MyKey","YourSection",FileName)) cout << "Record was successfully commented" << endl << endl;
 	else cout << "Failed to comment the record" << endl << endl;
 	Show(FileName);
 

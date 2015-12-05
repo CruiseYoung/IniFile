@@ -1,31 +1,30 @@
 #include "IniFile.h"
 #include <fstream>
+#include <algorithm>
+#include <sys/stat.h>
+#include <iterator>
 #include <cassert>
 
+using namespace std;
 
 CIniFile::CIniFile(void)													// Default constructor
     : m_Loaded(false)
 {
 }
 
-CIniFile::CIniFile(const string& FileName)									// constructor
+CIniFile::CIniFile(string FileName)											// constructor
     : m_FileName(FileName)
     , m_Loaded(false)
 {
 }
 
-
-CIniFile::~CIniFile(void)
-{
-}
-
 // replace all old_value with new_value in 'str'
-std::string& replace_all(std::string& str, const std::string& old_value, const std::string& new_value)
+string& replace_all(string& str, const string& old_value, const string& new_value)   
 {   
 	while (true)
 	{   
-		std::string::size_type pos(0);
-		if ((pos = str.find(old_value)) != std::string::npos)
+		string::size_type pos(0);   
+		if((pos = str.find(old_value)) != string::npos)   
 			str.replace(pos,old_value.length(),new_value);   
 		else
 			break;   
@@ -34,10 +33,10 @@ std::string& replace_all(std::string& str, const std::string& old_value, const s
 }   
 
 // A function to trim whitespace from both sides of a given string
-void Trim(std::string& str, const std::string & ChrsToTrim = " \t\n\r", int TrimDir = 0)
+void Trim(string& str, const string & ChrsToTrim = " \t\n\r", int TrimDir = 0)
 {
-    std::size_t startIndex = str.find_first_not_of(ChrsToTrim);
-    if (startIndex == std::string::npos)
+    size_t startIndex = str.find_first_not_of(ChrsToTrim);
+    if (startIndex == string::npos)
     {
         str.erase();
         return;
@@ -55,33 +54,32 @@ void Trim(std::string& str, const std::string & ChrsToTrim = " \t\n\r", int Trim
 		str = replace_all(str, "\t", "");
 }
 
-//inline void TrimRight(std::string& str, const std::string & ChrsToTrim = " \t\n\r")
+//inline void TrimRight(string& str, const string & ChrsToTrim = " \t\n\r")
 //{
 //    Trim(str, ChrsToTrim, 2);
 //}
 
-//inline void TrimLeft(std::string& str, const std::string & ChrsToTrim = " \t\n\r")
+//inline void TrimLeft(string& str, const string & ChrsToTrim = " \t\n\r")
 //{
 //    Trim(str, ChrsToTrim, 1);
 //}
 
 // A function to transform a string to uppercase if neccessary
-//void UCase(std::string& str, bool ucase)
+//void UCase(string& str, bool ucase)
 //{
 //	if(ucase)
 //		transform(str.begin(), str.end(), str.begin(), toupper);
 //}
 
-void CIniFile::SetFileName(const string& FileName)
+void CIniFile::SetFileName(string FileName)
 {
     m_FileName = FileName;
 }
 
-
 bool CIniFile::Load()
 {
     string& FileName = m_FileName;
-    vector<Record>& content = m_content;
+    list<Record>& content = m_content;
 
     assert(!FileName.empty());
 	if (m_Loaded)
@@ -90,14 +88,14 @@ bool CIniFile::Load()
     string s;																// Holds the current line from the ini file
     string CurrentSection;												    // Holds the current section name
 
-	std::ifstream inFile(FileName.c_str());									// Create an input filestream
+    ifstream inFile(FileName.c_str());									    // Create an input filestream
     if (!inFile.is_open())
         return false;									                    // If the input file doesn't open, then return
-    content.clear();														// Clear the content vector
+    content.clear();														// Clear the content list
 
     string comments = "";													// A string to store comments in
 
-    while (!std::getline(inFile, s).eof())									// Read until the end of the file
+    while (!getline(inFile, s).eof())										// Read until the end of the file
     {
         Trim(s);															// Trim whitespace from the ends
         if (!s.empty())														// Make sure its not a blank line
@@ -156,24 +154,24 @@ bool CIniFile::Load()
 bool CIniFile::Save()
 {
     string& FileName = m_FileName;
-    vector<Record>& content = m_content;
+    list<Record>& content = m_content;
 
     assert(!FileName.empty());
 
-	std::ofstream outFile(FileName.c_str());								// Create an output filestream
+    ofstream outFile(FileName.c_str());									    // Create an output filestream
     if (!outFile.is_open())
         return false;									                    // If the output file doesn't open, then return
-
-    for (int i = 0; i < (int)content.size(); i++)							// Loop through each vector
+	for (list<Record>::iterator iter = content.begin();
+		iter != content.end(); ++iter) 										// Loop through each list
     {
-        outFile << content[i].Comments;									    // Write out the comments
-		if (content[i].Commented != ' ')
-			outFile << content[i].Commented;
+        outFile << iter->Comments;											// Write out the comments
+		if (iter->Commented != ' ')
+			outFile << iter->Commented;
 
-		if(content[i].Key == "")											// Is this a section?			
-			outFile<< "[" << content[i].Section << "]" << std::endl;		// Then format the section
+		if(iter->Key == "")													// Is this a section?			
+			outFile<< "[" << iter->Section << "]" << endl;					// Then format the section
 		else
-			outFile << content[i].Key << "=" << content[i].Value << std::endl;	// Else format a key/value
+			outFile << iter->Key << "=" << iter->Value << endl;				// Else format a key/value
     }
 
     outFile.close();														// Close the file
@@ -201,67 +199,70 @@ bool CIniFile::Create()
     return Save();										                    // Save
 }
 
-std::vector<std::string> CIniFile::GetSectionNames()
+list<string> CIniFile::GetSectionNames()
 {
-    vector<string> data;													// Holds the return data
-    vector<Record>& content = m_content;									// Holds the current record
+    list<string> data;														// Holds the return data
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())											                    // Make sure the file is loaded
     {
-        for (int i = 0; i < (int)content.size(); i++)						// Loop through the content
+		for (list<Record>::iterator iter = content.begin();
+			iter != content.end(); ++iter)									// Loop through the content
         {
-            if (content[i].Key == "")										// If there is no key value, then its a section
-                data.push_back(content[i].Section);						    // Add the section to the return data
+            if (iter->Key == "")											// If there is no key value, then its a section
+                data.push_back(iter->Section);						    	// Add the section to the return data
         }
     }
 
     return data;															// Return the data
 }
 
-std::vector<CIniFile::Record> CIniFile::GetSections()
+list<CIniFile::Record> CIniFile::GetSections()
 {
-    vector<Record> data;													// Holds the return data
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record> data;														// Holds the return data
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())											                    // Make sure the file is loaded
     {
-        for (int i = 0; i < (int)content.size(); i++)						// Loop through the content
+		for (list<Record>::iterator iter = content.begin();
+			iter != content.end(); ++iter)									// Loop through the content
         {
-            if (content[i].Key == "")										// If this is a section 
-                data.push_back(content[i]);								    // Add the record to the return data
+            if (iter->Key == "")											// If this is a section 
+                data.push_back(*iter);								    	// Add the record to the return data
         }
     }
 
     return data;															// Return the data
 }
 
-std::vector<CIniFile::Record> CIniFile::GetSection(const string& SectionName)
+list<CIniFile::Record> CIniFile::GetSection(string SectionName)
 {
-    vector<Record> data;													// Holds the return data
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record> data;														// Holds the return data
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())											                    // Make sure the file is loaded
     {
-        for (int i = 0; i < (int)content.size(); i++)						// Loop through the content
+		for (list<Record>::iterator iter = content.begin();
+			iter != content.end(); ++iter)									// Loop through the content
         {
-            if ((content[i].Section == SectionName)					        // If this is the section name we want
-                && (content[i].Key != ""))									// but not the section name itself
-                data.push_back(content[i]);								    // Add the record to the return data
+            if ((iter->Section == SectionName)					        	// If this is the section name we want
+                && (iter->Key != ""))										// but not the section name itself
+                data.push_back(*iter);								    	// Add the record to the return data
         }
     }
 
     return data;															// Return the data
 }
 
-std::vector<CIniFile::Record> CIniFile::GetRecord(const string& KeyName, const string& SectionName)
+list<CIniFile::Record> CIniFile::GetRecord(string KeyName, string SectionName)
 {
-    vector<Record> data;													// Holds the return data
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record> data;														// Holds the return data
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())											                    // Make sure the file is loaded
     {
-        vector<Record>::iterator iter = std::find_if(content.begin(),
-            content.end(),
+        list<Record>::iterator iter = find_if(
+			content.begin(), content.end(),
             CIniFile::RecordSectionKeyIs(SectionName, KeyName));		    // Locate the Record
 
         if (iter == content.end())
@@ -272,51 +273,53 @@ std::vector<CIniFile::Record> CIniFile::GetRecord(const string& KeyName, const s
     return data;															// Return the Record
 }
 
-std::string CIniFile::GetValue(const string& KeyName, const string& SectionName)
+string CIniFile::GetValue(string KeyName, string SectionName)
 {
-    vector<Record> record = GetRecord(KeyName, SectionName);	            // Get the Record
+    list<Record> record = GetRecord(KeyName, SectionName);	            	// Get the Record
 
     if (!record.empty())													// Make sure there is a value to return
-        return record[0].Value;											    // And return the value
+        return record.front().Value;										// And return the value
 
     return "";																// No value was found
 }
 
-std::string CIniFile::Content()
+string CIniFile::Content()
 {
     string s = "";															// Hold our return string
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())											                    // Make sure the file is loaded
     {
-        for (int i = 0; i < (int)content.size(); i++)						// Loop through the content
+		for (list<Record>::iterator iter = content.begin();
+			iter != content.end(); ++iter)									// Loop through the content
         {
-            if (content[i].Comments != "")
-				s += content[i].Comments;									// Add the comments
-            if (content[i].Commented != ' ')
-				s += content[i].Commented;									// If this is commented, then add it
-            if ((content[i].Key == ""))										// Is this a section?
-                s += '[' + content[i].Section + ']';						// Add the section
+            if (iter->Comments != "")
+				s += iter->Comments;										// Add the comments
+            if (iter->Commented != ' ')
+				s += iter->Commented;										// If this is commented, then add it
+            if ((iter->Key == ""))											// Is this a section?
+                s += '[' + iter->Section + ']';								// Add the section
             else
-                s += content[i].Key + '=' + content[i].Value;			    // Or the Key value to the return srting
+                s += iter->Key + '=' + iter->Value;			    			// Or the Key value to the return srting
 
-            if (i != content.size())
+            if (iter != content.end())
                 s += '\n';								                    // If this is not the last line, add a CrLf
         }
-        return s;															// Return the contents
+        
+		return s;															// Return the contents
     }
 
     return "";
 }
 
-bool CIniFile::SectionExists(const string& SectionName)
+bool CIniFile::SectionExists(string SectionName)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())											                    // Make sure the file is loaded
     {
-        vector<Record>::iterator iter = std::find_if(content.begin(),
-            content.end(),
+        list<Record>::iterator iter = find_if(
+			content.begin(), content.end(),
             CIniFile::RecordSectionIs(SectionName));					    // Locate the Section
 
         if (iter == content.end())
@@ -328,14 +331,14 @@ bool CIniFile::SectionExists(const string& SectionName)
     return true;															// The Section was found
 }
 
-bool CIniFile::RecordExists(const string& KeyName, const string& SectionName)
+bool CIniFile::RecordExists(string KeyName, string SectionName)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())											                    // Make sure the file is loaded
     {
-        vector<Record>::iterator iter = std::find_if(content.begin(),
-            content.end(),
+        list<Record>::iterator iter = find_if(
+			content.begin(), content.end(),
             CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
@@ -347,9 +350,9 @@ bool CIniFile::RecordExists(const string& KeyName, const string& SectionName)
     return true;															// The Section/Key was found
 }
 
-bool CIniFile::AddSection(const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::AddSection(string SectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (!Create())
         return false;
@@ -359,15 +362,9 @@ bool CIniFile::AddSection(const string& SectionName, bool Saving/* = false*/)
         if (!SectionExists(SectionName))
         {
  			Record s = {"", ' ', SectionName, "", ""};						// Define a new section
-//	        Record s;
-//	        s.Comments  = "";
-//	        s.Commented = ' ';
-//	        s.Section   = SectionName;
-//	        s.Key       = "";
-//	        s.Value     = "";
-
             content.push_back(s);											// Add the section
-            if (Saving)
+            
+			if (Saving)
                 return Save();												// Save
             else
                 return true;
@@ -379,9 +376,9 @@ bool CIniFile::AddSection(const string& SectionName, bool Saving/* = false*/)
     return false;															// The file did not open
 }
 
-bool CIniFile::SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::SetValue(string KeyName, string Value, string SectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (!Create())
         return false;
@@ -392,22 +389,11 @@ bool CIniFile::SetValue(const string& KeyName, const string& Value, const string
         {
             Record s = { "", ' ', SectionName, "", "" };					// Define a new section
             Record r = { "", ' ', SectionName, KeyName, Value };			// Define a new record
-//			Record s;
-//			s.Comments  = "";
-//			s.Commented = ' ';
-//			s.Section   = SectionName;
-//			s.Key       = "";
-//			s.Value     = "";
-
-//			Record r;
-//			r.Comments  = "";
-//			r.Commented = ' ';
-//			r.Section   = SectionName;
-//			r.Key       = KeyName;
-//			r.Value     = Value;
-            content.push_back(s);											// Add the section
+            
+			content.push_back(s);											// Add the section
             content.push_back(r);											// Add the record
-            if (Saving)
+            
+			if (Saving)
                 return Save();												// Save
             else
                 return true;
@@ -415,35 +401,27 @@ bool CIniFile::SetValue(const string& KeyName, const string& Value, const string
 
         if (!RecordExists(KeyName, SectionName))				    		// If the Key doesn't exist
         {
-            vector<Record>::iterator iter = std::find_if(content.begin(),
-                content.end(),
-                CIniFile::RecordSectionIs(SectionName));					// Locate the Section
-            iter++;															// Advance just past the section
             Record r = { "", ' ', SectionName, KeyName, Value };			// Define a new record
-//			Record r;
-//			r.Comments  = "";
-//			r.Commented = ' ';
-//			r.Section   = SectionName;
-//			r.Key       = KeyName;
-//			r.Value     = Value;
 
-            //content.insert(iter,r);										// Add the record
-            vector<Record>::iterator orderiter = std::find_if_not(iter,
-                content.end(),
-                CIniFile::RecordSectionIs(SectionName));
-            content.insert(orderiter, r);									// Add the record
-            if (Saving)
+            list<Record>::reverse_iterator r_iter = find_if(
+				content.rbegin(), content.rend(),
+                CIniFile::RecordSectionIs(SectionName));					// Locate the Section
+			list<Record>::iterator iter =  r_iter.base();
+			content.insert(iter,r);											// Add the record
+
+			if (Saving)
                 return Save();												// Save
             else
                 return true;
         }
 
-        vector<Record>::iterator iter = std::find_if(content.begin(),
-            content.end(),
+        list<Record>::iterator iter = find_if(
+			content.begin(), content.end(),
             CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Record
 
         iter->Value = Value;												// Insert the correct value
-        if (Saving)
+        
+		if (Saving)
             return Save();												    // Save
         else
             return true;
@@ -452,18 +430,18 @@ bool CIniFile::SetValue(const string& KeyName, const string& Value, const string
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::DeleteSection(const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::DeleteSection(string SectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())																// Make sure the file is loaded
     {
-        for (int i = (int)content.size() - 1; i > -1; i--)					// Iterate backwards through the content
-        {
-            if (content[i].Section == SectionName)						    // Is this related to the Section?
-                content.erase(content.begin() + i);						    // Then erase it
-        }
-        if (Saving)
+		list<Record>::iterator new_end = remove_if(
+			content.begin(), content.end(),
+			CIniFile::RecordSectionIs(SectionName));
+		content.erase(new_end, content.end());
+
+		if (Saving)
             return Save();												    // Save
         else
             return true;
@@ -472,21 +450,22 @@ bool CIniFile::DeleteSection(const string& SectionName, bool Saving/* = false*/)
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::DeleteRecord(string KeyName, string SectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())																// Make sure the file is loaded
     {
-        vector<Record>::iterator iter = std::find_if(content.begin(),
-            content.end(),
+        list<Record>::iterator iter = find_if(
+			content.begin(), content.end(),
             CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
 
         content.erase(iter);												// Remove the Record
-        if (Saving)
+        
+		if (Saving)
             return Save();												    // Save
         else
             return true;
@@ -495,14 +474,14 @@ bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, bo
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving/* = false*/)
+bool CIniFile::RenameSection(string OldSectionName, string NewSectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (!SectionExists(NewSectionName))                            			// If the Section doesn't exist
     {
-        for (vector<Record>::iterator iter = content.begin();
-            iter < content.end(); iter++)									// Loop through the records
+        for (list<Record>::iterator iter = content.begin();
+            iter != content.end(); ++iter)									// Loop through the records
         {
             if (iter->Section == OldSectionName)							// Is this the OldSectionName?
                 iter->Section = NewSectionName;							    // Now its the NewSectionName
@@ -517,35 +496,37 @@ bool CIniFile::RenameSection(const string& OldSectionName, const string& NewSect
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::Sort(bool Descending, bool Saving/* = false*/)
+bool CIniFile::Sort(bool Descending, bool Saving/* = true*/)
 {
-    vector<CIniFile::Record> content;										// Used to hold the sorted content
-    vector<CIniFile::Record> sections = GetSections();			            // Get a list of Sections
+    list<CIniFile::Record> content;											// Used to hold the sorted content
+    list<CIniFile::Record> sections = GetSections();			            // Get a list of Sections
 
     if (!sections.empty())													// Is there anything to process?
     {
         if (Descending)													    // Descending or Ascending?
-            std::sort(sections.begin(), sections.end(), DescendingSectionSort());
+            sections.sort(DescendingSectionSort());
         else																// Sort the Sections
-            std::sort(sections.begin(), sections.end(), AscendingSectionSort());
+            sections.sort(AscendingSectionSort());
 
-        for (vector<Record>::iterator iter = sections.begin(); iter < sections.end(); iter++) // For each Section
+        for (list<Record>::iterator iter = sections.begin();
+			iter != sections.end(); ++iter)									// For each Section
         {
             content.push_back(*iter);										// Add the sorted Section to the content
 
-            vector<CIniFile::Record> records = GetSection(iter->Section);   // Get a list of Records for this section
+            list<CIniFile::Record> records = GetSection(iter->Section);		// Get a list of Records for this section
 
             if (Descending)												    // Descending or Ascending?
-                std::sort(records.begin(), records.end(), DescendingRecordSort());
+				records.sort(DescendingRecordSort());
             else															// Sort the Records
-                std::sort(records.begin(), records.end(), AscendingRecordSort());
+                records.sort(AscendingRecordSort());
 
-            for (vector<Record>::iterator it = records.begin(); it < records.end(); it++) // For each Record
+            for (list<Record>::iterator it = records.begin();
+				it != records.end(); ++it)									// For each Record
                 content.push_back(*it);									    // Add the sorted Record to the content
         }
 
         m_content.clear();
-        std::copy(content.begin(), content.end(), std::back_inserter(m_content));
+        copy(content.begin(), content.end(), back_inserter(m_content));
 
         if (Saving)
             return Save();												    // Save
@@ -556,14 +537,14 @@ bool CIniFile::Sort(bool Descending, bool Saving/* = false*/)
     return false;															// There were no sections
 }
 
-bool CIniFile::SetSectionComments(const string& Comments, const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::SetSectionComments(string Comments, string SectionName, bool Saving/* = true*/)
 {
-	string comments = Comments;
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())																// Make sure the file is loaded
     {
-        for (vector<Record>::iterator iter = content.begin(); iter < content.end(); iter++)	// Loop through the records
+        for (list<Record>::iterator iter = content.begin();
+		iter != content.end(); ++iter)										// Loop through the records
         {
             if ((iter->Section == SectionName) &&							// Is this the Section?
                 (iter->Key == ""))											// And not a record
@@ -571,11 +552,12 @@ bool CIniFile::SetSectionComments(const string& Comments, const string& SectionN
                 if (Comments.size() >= 2)									// Is there a comment?
                 {
                     if (Comments.substr(Comments.size() - 2) != "\n")		// Does the string end in a newline?
-						comments += "\n";									// If not, add one
+                        Comments += "\n";									// If not, add one
                 }
 
-				iter->Comments = comments;								    // Set the comments
-                if (Saving)
+                iter->Comments = Comments;								    // Set the comments
+                
+				if (Saving)
                     return Save();											// Save
                 else
                     return true;
@@ -586,15 +568,14 @@ bool CIniFile::SetSectionComments(const string& Comments, const string& SectionN
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::SetRecordComments(string Comments, string KeyName, string SectionName, bool Saving/* = true*/)
 {
-	string comments = Comments;
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())																// Make sure the file is loaded
     {
-        vector<Record>::iterator iter = std::find_if(content.begin(),
-            content.end(),
+        list<Record>::iterator iter = find_if(
+			content.begin(), content.end(),
             CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
@@ -603,11 +584,12 @@ bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, 
         if (Comments.size() >= 2)											// Is there a comment?
         {
             if (Comments.substr(Comments.size() - 2) != "\n")				// Does the string end in a newline?
-				comments += "\n";											// If not, add one
+                Comments += "\n";											// If not, add one
         }
 
-		iter->Comments = comments;										    // Set the comments
-        if (Saving)
+        iter->Comments = Comments;										    // Set the comments
+        
+		if (Saving)
             return Save();												    // Save
         else
             return true;
@@ -616,13 +598,14 @@ bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, 
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::CommentSection(char CommentChar, const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::CommentSection(char CommentChar, string SectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())																// Make sure the file is loaded
     {
-        for (vector<Record>::iterator iter = content.begin(); iter < content.end(); iter++)
+        for (list<Record>::iterator iter = content.begin();
+			iter != content.end(); ++iter)
         {
             if (iter->Section == SectionName)								// Is this the right section?
                 iter->Commented = CommentChar;							    // Change the comment value
@@ -636,21 +619,22 @@ bool CIniFile::CommentSection(char CommentChar, const string& SectionName, bool 
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::CommentRecord(CommentChar cc, string KeyName, string SectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())																// Make sure the file is loaded
     {
-        vector<Record>::iterator iter = std::find_if(content.begin(),
-            content.end(),
+        list<Record>::iterator iter = find_if(
+			content.begin(), content.end(),
             CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
 
         iter->Commented = cc;										        // Change the Comment value
-        if (Saving)
+        
+		if (Saving)
             return Save();												    // Save
         else
             return true;
@@ -659,18 +643,20 @@ bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::UnCommentSection(const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::UnCommentSection(string SectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())																// Make sure the file is loaded
     {
-        for (vector<Record>::iterator iter = content.begin(); iter < content.end(); iter++)
+        for (list<Record>::iterator iter = content.begin();
+			iter != content.end(); ++iter)
         {
             if (iter->Section == SectionName)								// Is this the right section?
                 iter->Commented = ' ';										// Remove the comment value
         }
-        if (Saving)
+        
+		if (Saving)
             return Save();												    // Save
         else
             return true;
@@ -679,21 +665,22 @@ bool CIniFile::UnCommentSection(const string& SectionName, bool Saving/* = false
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving/* = false*/)
+bool CIniFile::UnCommentRecord(string KeyName, string SectionName, bool Saving/* = true*/)
 {
-    vector<Record>& content = m_content;									// Holds the current record
+    list<Record>& content = m_content;										// Holds the current record
 
     if (Load())																// Make sure the file is loaded
     {
-        vector<Record>::iterator iter = std::find_if(content.begin(),
-            content.end(),
+        list<Record>::iterator iter = find_if(
+			content.begin(), content.end(),
             CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
 
         iter->Commented = ' ';												// Remove the Comment value
-        if (Saving)
+        
+		if (Saving)
             return Save();												    // Save
         else
             return true;
@@ -701,4 +688,3 @@ bool CIniFile::UnCommentRecord(const string& KeyName, const string& SectionName,
 
     return false;															// In the event the file does not load
 }
-

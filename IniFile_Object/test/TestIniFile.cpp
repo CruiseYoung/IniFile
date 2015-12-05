@@ -1,9 +1,7 @@
 // TestCIniFile::cpp : Defines the entry point for the console application.
 //
 #include "../src/IniFile.h"
-#include <tchar.h>
-#include <string>
-#include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -24,7 +22,7 @@ void Show(CIniFile& IniFile)
 	system("cls");
 }
 
-int _tmain(int argc, _TCHAR* argv[])
+int main(int argc, char* argv[])
 {
     string str_num = "555";
     cout << convert<int>(str_num) << endl;
@@ -91,10 +89,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to get a list of sections" << endl << endl;
 	cout << "CIniFile::GetSectionNames(FileName);" << endl << endl;
-    vector<string> s = IniFile.GetSectionNames();
-	cout << "The sections are returned as a std::vector<std::string>\n\n";
-	for(int i=0; i < (int)s.size(); i++)
-		cout << s[i].c_str() << endl;
+    list<string> s = IniFile.GetSectionNames();
+	cout << "The sections are returned as a std::list<std::string>\n\n";
+	for (list<string>::iterator iter = s.begin(); iter != s.end(); ++iter)
+		cout << iter->c_str() << endl;
 	Show(IniFile);
 
 	// Section Exists
@@ -182,7 +180,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "Attempting to comment the record MyKey" << endl << endl;
 	cout << "(Note that both # and ; are recognized as commented lines by CIniFile)" << endl << endl;
 	cout << "CIniFile::CommentRecord(CIniFile::CommentChar::Pound,\"MyKey\",\"YourSection\",FileName);" << endl << endl;
-    if (IniFile.CommentRecord(CIniFile::CommentChar::Pound, "MyKey", "YourSection")) cout << "Record was successfully commented" << endl << endl;
+    if (IniFile.CommentRecord(CIniFile::Pound, "MyKey", "YourSection")) cout << "Record was successfully commented" << endl << endl;
 	else cout << "Failed to comment the record" << endl << endl;
 	Show(IniFile);
 
@@ -225,8 +223,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	cout << "CIniFile::Content(FileName);" << endl << endl;
 	cout << "The contents of the file throughout this demo have used this function to display the contents below" << endl;
 	Show(IniFile);
-
-	IniFile.Save();
 
 	return 0;
 }
