@@ -5,35 +5,35 @@
 
 using namespace std;
 
-void Show(string FileName)
+void Show(const string& FileName)
 {
-	cout << endl 
-		 << "++++++++++++++++++++++++++++++++++++++++"
-		 << endl
-		 << "+ Contents of the file are below       +"
-		 << endl
-		 << "++++++++++++++++++++++++++++++++++++++++"
-		 << endl
-		 << CIniFile::Content(FileName)
-		 << endl
-		 << "++++++++++++++++++++++++++++++++++++++++"
-		 << endl << endl;
-	system ("PAUSE"); 
+	cout << endl
+		<< "++++++++++++++++++++++++++++++++++++++++"
+		<< endl
+		<< "+ Contents of the file are below       +"
+		<< endl
+		<< "++++++++++++++++++++++++++++++++++++++++"
+		<< endl
+		<< CIniFile::Content(FileName)
+		<< endl
+		<< "++++++++++++++++++++++++++++++++++++++++"
+		<< endl << endl;
+	system("PAUSE");
 	system("cls");
 }
 
 int main(int argc, char* argv[])
 {
-    string str_num = "555";
-    cout << convert<int>(str_num) << endl;
+	string str_num = "555";
+	cout << convert<int>(str_num) << endl;
 
-    float f_num = 666.0f;
-    cout << convert<string>(f_num) << endl;
+	float f_num = 666.0f;
+	cout << convert<string>(f_num) << endl;
 
-    system("PAUSE");
-    system("cls");
+	system("PAUSE");
+	system("cls");
 
-	string FileName = "test.ini";
+	const string FileName = "test.ini";
 
 	// Create a new file
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to create a new section called [MySection]" << endl << endl;
 	cout << "CIniFile::AddSection(\"MySection\", FileName);" << endl << endl;
-	if (CIniFile::AddSection("MySection",FileName)) cout << "Section was successfully created" << endl << endl;
+	if (CIniFile::AddSection("MySection", FileName)) cout << "Section was successfully created" << endl << endl;
 	else cout << "Failed to create the section" << endl << endl;
 	Show(FileName);
 
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to add a new key/value (MyKey=MyValue) to [MySection]" << endl << endl;
 	cout << "CIniFile::SetValue(\"MyKey\",\"MyValue\",\"MySection\",FileName);" << endl << endl;
-	if (CIniFile::SetValue("MyKey","MyValue","MySection",FileName)) cout << "Record was successfully created" << endl << endl;
+	if (CIniFile::SetValue("MyKey", "MyValue", "MySection", FileName)) cout << "Record was successfully created" << endl << endl;
 	else cout << "Failed to create the record" << endl << endl;
 	Show(FileName);
 
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to add a new key/value (TestKey=TestValue)" << endl << "and create a new section [TestSection] at the same time" << endl << endl;
 	cout << "CIniFile::SetValue(\"TestKey\",\"TestValue\",\"TestSection\",FileName);" << endl << endl;
-	if (CIniFile::SetValue("TestKey","TestValue","TestSection",FileName)) cout << "Record and section were successfully created" << endl << endl;
+	if (CIniFile::SetValue("TestKey", "TestValue", "TestSection", FileName)) cout << "Record and section were successfully created" << endl << endl;
 	else cout << "Failed to create the record and section" << endl << endl;
 	Show(FileName);
 
@@ -72,7 +72,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to change the key/value for (MyKey=MyValue) to (MyKey=YourValue)" << endl << endl;
 	cout << "CIniFile::SetValue(\"MyKey\",\"YourValue\",\"MySection\",FileName);" << endl << endl;
-	if (CIniFile::SetValue("MyKey","YourValue","MySection",FileName)) cout << "Record was successfully changed" << endl << endl;
+	if (CIniFile::SetValue("MyKey", "YourValue", "MySection", FileName)) cout << "Record was successfully changed" << endl << endl;
 	else cout << "Failed to change the record" << endl << endl;
 	Show(FileName);
 
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to get the value of MyKey" << endl << endl;
 	cout << "CIniFile::GetValue(\"MyKey\",\"MySection\",FileName);" << endl << endl;
-	string v = CIniFile::GetValue("MyKey","MySection",FileName);
+	string v = CIniFile::GetValue("MyKey", "MySection", FileName);
 	cout << "The value of MyKey is: " << v.c_str() << endl << endl;
 	Show(FileName);
 
@@ -98,7 +98,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to verify that [MySection] exists" << endl << endl;
 	cout << "CIniFile::SectionExists(\"MySection\",FileName);" << endl << endl;
-	if (CIniFile::SectionExists("MySection",FileName)) cout << "Section exists" << endl << endl;
+	if (CIniFile::SectionExists("MySection", FileName)) cout << "Section exists" << endl << endl;
 	else cout << "Section does not exist" << endl << endl;
 	Show(FileName);
 
@@ -106,7 +106,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to verify that MyKey exists" << endl << endl;
 	cout << "CIniFile::RecordExists(\"MyKey\",\"MySection\",FileName);" << endl << endl;
-	if (CIniFile::RecordExists("MyKey","MySection",FileName)) cout << "Record exists" << endl << endl;
+	if (CIniFile::RecordExists("MyKey", "MySection", FileName)) cout << "Record exists" << endl << endl;
 	else cout << "Record does not exist" << endl << endl;
 	Show(FileName);
 
@@ -114,15 +114,15 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "BE CAREFUL - functions in CIniFile are CASE-SENSITIVE" << endl << endl;
 	cout << "CIniFile::RecordExists(\"mykey\",\"MySection\",FileName);" << endl << endl;
-	if (CIniFile::RecordExists("mykey","MySection",FileName)) cout << "Record exists" << endl << endl;
+	if (CIniFile::RecordExists("mykey", "MySection", FileName)) cout << "Record exists" << endl << endl;
 	else cout << "Record does not exist" << endl << endl;
 	Show(FileName);
-    
+
 	// Add a comment to the section
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to add comments to [MySection]" << endl << endl;
 	cout << "CIniFile::SetSectionComments(\"# This Section was created by CIniFile\",\"MySection\",FileName);" << endl << endl;
-	if (CIniFile::SetSectionComments("# This Section was created by CIniFile","MySection",FileName)) cout << "Comments were successfully added" << endl << endl;
+	if (CIniFile::SetSectionComments("# This Section was created by CIniFile", "MySection", FileName)) cout << "Comments were successfully added" << endl << endl;
 	else cout << "Failed to add the comments" << endl << endl;
 	Show(FileName);
 
@@ -130,7 +130,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to add comments to MyKey" << endl << endl;
 	cout << "CIniFile::SetRecordComments(\"# This Key was created by CIniFile\",\"MyKey\",\"MySection\",FileName);" << endl << endl;
-	if (CIniFile::SetRecordComments("# This Key was created by CIniFile","MyKey","MySection",FileName)) cout << "Comments were successfully added" << endl << endl;
+	if (CIniFile::SetRecordComments("# This Key was created by CIniFile", "MyKey", "MySection", FileName)) cout << "Comments were successfully added" << endl << endl;
 	else cout << "Failed to add the comments" << endl << endl;
 	Show(FileName);
 
@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to rename [MySection] to [YourSection]" << endl << endl;
 	cout << "CIniFile::RenameSection(\"MySection\",\"YourSection\",FileName);" << endl << endl;
-	if (CIniFile::RenameSection("MySection","YourSection",FileName)) cout << "Section was successfully changed" << endl << endl;
+	if (CIniFile::RenameSection("MySection", "YourSection", FileName)) cout << "Section was successfully changed" << endl << endl;
 	else cout << "Failed to change the section" << endl << endl;
 	Show(FileName);
 
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Multiple comments can be added by putting \\n# in the comments string" << endl << endl;
 	cout << "CIniFile::SetSectionComments(\"# This Section was created by CIniFile\\n# Kids, don't try this at home \\n\",\"YourSection\",FileName);" << endl << endl;
-	if (CIniFile::SetSectionComments("# This Section was created by CIniFile\n# Kids, don't try this at home","YourSection",FileName)) cout << "Comments were successfully added" << endl << endl;
+	if (CIniFile::SetSectionComments("# This Section was created by CIniFile\n# Kids, don't try this at home", "YourSection", FileName)) cout << "Comments were successfully added" << endl << endl;
 	else cout << "Failed to add the comments" << endl << endl;
 	Show(FileName);
 
@@ -154,7 +154,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Comments are removed by setting them to \"\"" << endl << endl;
 	cout << "CIniFile::SetRecordComments(\"\",\"MyKey\",\"YourSection\",FileName);" << endl << endl;
-	if (CIniFile::SetRecordComments("","MyKey","YourSection",FileName)) cout << "Comments were successfully removed" << endl << endl;
+	if (CIniFile::SetRecordComments("", "MyKey", "YourSection", FileName)) cout << "Comments were successfully removed" << endl << endl;
 	else cout << "Failed to remove the comments" << endl << endl;
 	Show(FileName);
 
@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to comment the entire section [YourSection]" << endl << endl;
 	cout << "CIniFile::CommentSection(\"#\",\"YourSection\",FileName);" << endl << endl;
-	if (CIniFile::CommentSection('#',"YourSection",FileName)) cout << "Section was successfully commented" << endl << endl;
+	if (CIniFile::CommentSection('#', "YourSection", FileName)) cout << "Section was successfully commented" << endl << endl;
 	else cout << "Failed to comment the section" << endl << endl;
 	Show(FileName);
 
@@ -170,7 +170,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to un-comment the entire section [YourSection]" << endl << endl;
 	cout << "CIniFile::UnCommentSection(\"YourSection\",FileName);" << endl << endl;
-	if (CIniFile::UnCommentSection("YourSection",FileName)) cout << "Section was successfully un-commented" << endl << endl;
+	if (CIniFile::UnCommentSection("YourSection", FileName)) cout << "Section was successfully un-commented" << endl << endl;
 	else cout << "Failed to un-comment the section" << endl << endl;
 	Show(FileName);
 
@@ -179,7 +179,7 @@ int main(int argc, char* argv[])
 	cout << "Attempting to comment the record MyKey" << endl << endl;
 	cout << "(Note that both # and ; are recognized as commented lines by CIniFile)" << endl << endl;
 	cout << "CIniFile::CommentRecord(CIniFile::CommentChar::Pound,\"MyKey\",\"YourSection\",FileName);" << endl << endl;
- 	if (CIniFile::CommentRecord(CIniFile::Pound,"MyKey","YourSection",FileName)) cout << "Record was successfully commented" << endl << endl;
+	if (CIniFile::CommentRecord(CIniFile::Pound, "MyKey", "YourSection", FileName)) cout << "Record was successfully commented" << endl << endl;
 	else cout << "Failed to comment the record" << endl << endl;
 	Show(FileName);
 
@@ -187,7 +187,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to un-comment the record MyKey" << endl << endl;
 	cout << "CIniFile::UnCommentRecord(\"MyKey\",\"YourSection\",FileName);" << endl << endl;
-	if (CIniFile::UnCommentRecord("MyKey","YourSection",FileName)) cout << "Record was successfully un-commented" << endl << endl;
+	if (CIniFile::UnCommentRecord("MyKey", "YourSection", FileName)) cout << "Record was successfully un-commented" << endl << endl;
 	else cout << "Failed to un-comment the record" << endl << endl;
 	Show(FileName);
 
@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
 	cout << "Attempting to sort the file - false means ASCENDING, true means DESCENDING" << endl << endl;
 	cout << "(Note that the comments will stay with their targets)" << endl << endl;
 	cout << "CIniFile::Sort(FileName,false);" << endl << endl;
-	if (CIniFile::Sort(FileName,false)) cout << "File was successfully sorted" << endl << endl;
+	if (CIniFile::Sort(FileName, false)) cout << "File was successfully sorted" << endl << endl;
 	else cout << "Failed to sort the file" << endl << endl;
 	Show(FileName);
 
@@ -204,7 +204,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to delete the entire section [TestSection]" << endl << endl;
 	cout << "CIniFile::DeleteSection(\"TestSection\",FileName);" << endl << endl;
-	if (CIniFile::DeleteSection("TestSection",FileName)) cout << "Section was successfully deleted" << endl << endl;
+	if (CIniFile::DeleteSection("TestSection", FileName)) cout << "Section was successfully deleted" << endl << endl;
 	else cout << "Failed to delete the section" << endl << endl;
 	Show(FileName);
 
@@ -212,7 +212,7 @@ int main(int argc, char* argv[])
 	cout << "TestIniFile - Demo program for the CIniFile Class" << endl << endl;
 	cout << "Attempting to delete the record <yKey" << endl << endl;
 	cout << "CIniFile::DeleteRecord(\"MyKey\",\"YourSection\",FileName);" << endl << endl;
-	if (CIniFile::DeleteRecord("MyKey","YourSection",FileName)) cout << "Record was successfully deleted" << endl << endl;
+	if (CIniFile::DeleteRecord("MyKey", "YourSection", FileName)) cout << "Record was successfully deleted" << endl << endl;
 	else cout << "Failed to delete the record" << endl << endl;
 	Show(FileName);
 

@@ -4,91 +4,97 @@
 #include <sstream>
 #pragma warning(disable:4786)
 
-template<class out_type, class in_value>
+template <class out_type, class in_value>
 static out_type convert(const in_value& t)
 {
-    out_type result;
+	out_type result;
 
-    try
-    {
-        std::stringstream stream;
-        stream << t;
-        stream >> result;
-        stream.clear();
-    }
-    catch (...) {}
+	try
+	{
+		std::stringstream stream;
+		stream << t;
+		stream >> result;
+		stream.clear();
+	}
+	catch (...)
+	{
+	}
 
-    return result;
+	return result;
 }
 
 
 class CIniFile
 {
 public:
-    struct Record
-    {
-        std::string Comments;
-        char Commented;
-        std::string Section;
-        std::string Key;
-        std::string Value;
-    };
+	typedef std::string string;
 
-    enum CommentChar
-    {
-        Pound = '#',
-        SemiColon = ';'
-    };
+	struct Record
+	{
+		string Comments;
+		char Commented;
+		string Section;
+		string Key;
+		string Value;
+	};
 
-    CIniFile(void);
-    CIniFile(std::string FileName);
+	enum CommentChar
+	{
+		Pound = '#',
+		SemiColon = ';'
+	};
+
+	CIniFile(void);
+	CIniFile(const string& FileName);
 
 public:
-    void SetFileName(std::string FileName);
+	void SetFileName(const string& FileName);
 
-    bool FileExist();
-    bool Create();
+	bool FileExist();
+	bool Create();
 
-    std::list<std::string> GetSectionNames();
-    std::list<Record> GetSection(std::string SectionName);
-    std::list<Record> GetRecord(std::string KeyName, std::string SectionName);
-    std::string GetValue(std::string KeyName, std::string SectionName);
-    std::string Content();
+	std::list<string> GetSectionNames();
+	std::list<Record> GetSection(const string& SectionName);
+	std::list<Record> GetRecord(const string& KeyName, const string& SectionName);
+	string GetValue(const string& KeyName, const string& SectionName);
+	string Content();
 
-    bool SectionExists(std::string SectionName);
-    bool RecordExists(std::string KeyName, std::string SectionName);
+	bool SectionExists(const string& SectionName);
+	bool RecordExists(const string& KeyName, const string& SectionName);
 
-    bool AddSection(std::string SectionName, bool Saving = true);
-    bool SetValue(std::string KeyName, std::string Value, std::string SectionName, bool Saving = true);
+	bool AddSection(const string& SectionName, bool Saving = true);
+	bool SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving = true);
 
-    bool DeleteSection(std::string SectionName, bool Saving = true);
-    bool DeleteRecord(std::string KeyName, std::string SectionName, bool Saving = true);
+	bool DeleteSection(const string& SectionName, bool Saving = true);
+	bool DeleteRecord(const string& KeyName, const string& SectionName, bool Saving = true);
 
-    bool RenameSection(std::string OldSectionName, std::string NewSectionName, bool Saving = true);
-    bool Sort(bool Descending, bool Saving = true);
+	bool RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving = true);
+	bool Sort(bool Descending, bool Saving = true);
 
-    bool SetSectionComments(std::string Comments, std::string SectionName, bool Saving = true);
-    bool SetRecordComments(std::string Comments, std::string KeyName, std::string SectionName, bool Saving = true);
+	bool SetSectionComments(const string& Comments, const string& SectionName, bool Saving = true);
+	bool SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving = true);
 
-    bool CommentSection(char CommentChar, std::string SectionName, bool Saving = true);
-    bool CommentRecord(CommentChar cc, std::string KeyName, std::string SectionName, bool Saving = true);
+	bool CommentSection(char CommentChar, const string& SectionName, bool Saving = true);
+	bool CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving = true);
 
-    bool UnCommentSection(std::string SectionName, bool Saving = true);
-    bool UnCommentRecord(std::string KeyName, std::string SectionName, bool Saving = true);
+	bool UnCommentSection(const string& SectionName, bool Saving = true);
+	bool UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving = true);
 
 	bool Save();
 
 private:
 	std::list<Record> GetSections();
-	bool Load();	
+	bool Load();
 
 	struct RecordSectionIs : std::unary_function<Record, bool>
 	{
-		std::string section_;
+		string section_;
 
-		RecordSectionIs(const std::string& section): section_(section){}
+		RecordSectionIs(const string& section): section_(section)
+		{
+		}
 
-		bool operator()( const Record& rec ) const
+		bool operator()(const Record& rec) const
 		{
 			return rec.Section == section_;
 		}
@@ -96,14 +102,16 @@ private:
 
 	struct RecordSectionKeyIs : std::unary_function<Record, bool>
 	{
-		std::string section_;
-		std::string key_;
+		string section_;
+		string key_;
 
-		RecordSectionKeyIs(const std::string& section, const std::string& key): section_(section),key_(key){}
-
-		bool operator()( const Record& rec ) const
+		RecordSectionKeyIs(const string& section, const string& key): section_(section), key_(key)
 		{
-			return ((rec.Section == section_)&&(rec.Key == key_));
+		}
+
+		bool operator()(const Record& rec) const
+		{
+			return ((rec.Section == section_) && (rec.Key == key_));
 		}
 	};
 
@@ -140,7 +148,7 @@ private:
 	};
 
 private:
-    std::string m_FileName;
-    bool m_Loaded;
-    std::list<Record> m_content;
+	string m_FileName;
+	bool m_Loaded;
+	std::list<Record> m_content;
 };

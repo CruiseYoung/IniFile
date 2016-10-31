@@ -4,84 +4,90 @@
 #include <sstream>
 #pragma warning(disable:4786)
 
-template<class out_type, class in_value>
+template <class out_type, class in_value>
 static out_type convert(const in_value& t)
 {
-    out_type result;
+	out_type result;
 
-    try
-    {
-        std::stringstream stream;
-        stream << t;
-        stream >> result;
-        stream.clear();
-    }
-    catch (...) {}
+	try
+	{
+		std::stringstream stream;
+		stream << t;
+		stream >> result;
+		stream.clear();
+	}
+	catch (...)
+	{
+	}
 
-    return result;
+	return result;
 }
 
 
 class CIniFile
 {
 public:
-    struct Record
-    {
-        std::string Comments;
-        char Commented;
-        std::string Section;
-        std::string Key;
-        std::string Value;
-    };
+	typedef std::string string;
 
-    enum CommentChar
-    {
-        Pound = '#',
-        SemiColon = ';'
-    };
+	struct Record
+	{
+		string Comments;
+		char Commented;
+		string Section;
+		string Key;
+		string Value;
+	};
 
-    static bool FileExist(std::string FileName);
-    static bool Create(std::string FileName);
+	enum CommentChar
+	{
+		Pound = '#',
+		SemiColon = ';'
+	};
 
-    static std::list<std::string> GetSectionNames(std::string FileName);
-    static std::list<Record> GetSection(std::string SectionName, std::string FileName);
-    static std::list<Record> GetRecord(std::string KeyName, std::string SectionName, std::string FileName);
-    static std::string GetValue(std::string KeyName, std::string SectionName, std::string FileName);
-    static std::string Content(std::string FileName);
+	static bool FileExist(const string& FileName);
+	static bool Create(const string& FileName);
 
-    static bool SectionExists(std::string SectionName, std::string FileName);
-    static bool RecordExists(std::string KeyName, std::string SectionName, std::string FileName);
+	static std::list<string> GetSectionNames(const string& FileName);
+	static std::list<Record> GetSection(const string& SectionName, const string& FileName);
+	static std::list<Record> GetRecord(const string& KeyName, const string& SectionName, const string& FileName);
+	static string GetValue(const string& KeyName, const string& SectionName, const string& FileName);
+	static string Content(const string& FileName);
 
-    static bool AddSection(std::string SectionName, std::string FileName);
-    static bool SetValue(std::string KeyName, std::string Value, std::string SectionName, std::string FileName);
+	static bool SectionExists(const string& SectionName, const string& FileName);
+	static bool RecordExists(const string& KeyName, const string& SectionName, const string& FileName);
 
-    static bool DeleteSection(std::string SectionName, std::string FileName);
-    static bool DeleteRecord(std::string KeyName, std::string SectionName, std::string FileName);
+	static bool AddSection(const string& SectionName, const string& FileName);
+	static bool SetValue(const string& KeyName, const string& Value, const string& SectionName, const string& FileName);
 
-    static bool RenameSection(std::string OldSectionName, std::string NewSectionName, std::string FileName);
-    static bool Sort(std::string FileName, bool Descending);
+	static bool DeleteSection(const string& SectionName, const string& FileName);
+	static bool DeleteRecord(const string& KeyName, const string& SectionName, const string& FileName);
 
-    static bool SetSectionComments(std::string Comments, std::string SectionName, std::string FileName);
-    static bool SetRecordComments(std::string Comments, std::string KeyName, std::string SectionName, std::string FileName);
+	static bool RenameSection(const string& OldSectionName, const string& NewSectionName, const string& FileName);
+	static bool Sort(const string& FileName, bool Descending);
 
-    static bool CommentSection(char CommentChar, std::string SectionName, std::string FileName);
-    static bool CommentRecord(CommentChar cc, std::string KeyName, std::string SectionName, std::string FileName);
+	static bool SetSectionComments(const string& Comments, const string& SectionName, const string& FileName);
+	static bool SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, const string& FileName);
 
-    static bool UnCommentSection(std::string SectionName, std::string FileName);
-    static bool UnCommentRecord(std::string KeyName, std::string SectionName, std::string FileName);
+	static bool CommentSection(char CommentChar, const string& SectionName, const string& FileName);
+	static bool CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, const string& FileName);
+
+	static bool UnCommentSection(const string& SectionName, const string& FileName);
+	static bool UnCommentRecord(const string& KeyName, const string& SectionName, const string& FileName);
 
 private:
-	static std::list<Record> GetSections(std::string FileName);
-	static bool Load(std::string FileName, std::list<Record>& content);	
-	static bool Save(std::string FileName, std::list<Record>& content);
+	static std::list<Record> GetSections(const string& FileName);
+	static bool Load(const string& FileName, std::list<Record>& content);
+	static bool Save(const string& FileName, std::list<Record>& content);
 
 	struct RecordSectionIs : std::unary_function<Record, bool>
 	{
-		std::string section_;
+		string section_;
 
-		RecordSectionIs(const std::string& section): section_(section){}
+		RecordSectionIs(const string& section): section_(section)
+		{
+		}
 
-		bool operator()( const Record& rec ) const
+		bool operator()(const Record& rec) const
 		{
 			return rec.Section == section_;
 		}
@@ -89,14 +95,16 @@ private:
 
 	struct RecordSectionKeyIs : std::unary_function<Record, bool>
 	{
-		std::string section_;
-		std::string key_;
+		string section_;
+		string key_;
 
-		RecordSectionKeyIs(const std::string& section, const std::string& key): section_(section),key_(key){}
-
-		bool operator()( const Record& rec ) const
+		RecordSectionKeyIs(const string& section, const string& key): section_(section), key_(key)
 		{
-			return ((rec.Section == section_)&&(rec.Key == key_));
+		}
+
+		bool operator()(const Record& rec) const
+		{
+			return ((rec.Section == section_) && (rec.Key == key_));
 		}
 	};
 
