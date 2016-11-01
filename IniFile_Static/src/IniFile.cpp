@@ -243,14 +243,14 @@ list<IniFile::Record> IniFile::GetRecord(const string& KeyName, const string& Se
     return data;															// Return the Record
 }
 
-string IniFile::GetValue(const string& KeyName, const string& SectionName, const string& FileName)
+string IniFile::GetValue(const string& KeyName, const string& SectionName, const string& FileName, const string& DefValue/* = ""*/)
 {
     list<Record> record = GetRecord(KeyName, SectionName, FileName);	    // Get the Record
 
     if (!record.empty())													// Make sure there is a value to return
         return record.front().Value;										// And return the value
 
-    return "";																// No value was found
+    return DefValue;														// No value was found
 }
 
 string IniFile::Content(const string& FileName)

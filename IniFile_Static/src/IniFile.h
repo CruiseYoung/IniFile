@@ -50,7 +50,7 @@ public:
 	static std::list<string> GetSectionNames(const string& FileName);
 	static std::list<Record> GetSection(const string& SectionName, const string& FileName);
 	static std::list<Record> GetRecord(const string& KeyName, const string& SectionName, const string& FileName);
-	static string GetValue(const string& KeyName, const string& SectionName, const string& FileName);
+	static string GetValue(const string& KeyName, const string& SectionName, const string& FileName, const string& DefValue = "");
 	static string Content(const string& FileName);
 
 	static bool SectionExists(const string& SectionName, const string& FileName);

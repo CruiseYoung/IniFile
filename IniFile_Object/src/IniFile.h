@@ -56,7 +56,7 @@ public:
 	std::list<string> GetSectionNames();
 	std::list<Record> GetSection(const string& SectionName);
 	std::list<Record> GetRecord(const string& KeyName, const string& SectionName);
-	string GetValue(const string& KeyName, const string& SectionName);
+	string GetValue(const string& KeyName, const string& SectionName, const string& DefValue = "");
 	string Content();
 
 	bool SectionExists(const string& SectionName);
