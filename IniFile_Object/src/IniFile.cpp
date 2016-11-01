@@ -10,12 +10,12 @@ using std::string;
 using std::ifstream;
 using std::ofstream;
 
-CIniFile::CIniFile(void)													// Default constructor
+IniFile::IniFile(void)													// Default constructor
     : m_Loaded(false)
 {
 }
 
-CIniFile::CIniFile(const string& FileName)									// constructor
+IniFile::IniFile(const string& FileName)									// constructor
     : m_FileName(FileName)
     , m_Loaded(false)
 {
@@ -74,12 +74,12 @@ void Trim(string& str, const string & ChrsToTrim = " \t\n\r", int TrimDir = 0)
 //		transform(str.begin(), str.end(), str.begin(), toupper);
 //}
 
-void CIniFile::SetFileName(const string& FileName)
+void IniFile::SetFileName(const string& FileName)
 {
     m_FileName = FileName;
 }
 
-bool CIniFile::Load()
+bool IniFile::Load()
 {
     const string& FileName = m_FileName;
     list<Record>& content = m_content;
@@ -154,7 +154,7 @@ bool CIniFile::Load()
     return true;
 }
 
-bool CIniFile::Save()
+bool IniFile::Save()
 {
     const string& FileName = m_FileName;
     list<Record>& content = m_content;
@@ -182,7 +182,7 @@ bool CIniFile::Save()
     return true;
 }
 
-bool CIniFile::FileExist()
+bool IniFile::FileExist()
 {
     const string& FileName = m_FileName;
 	assert(!FileName.empty());
@@ -195,7 +195,7 @@ bool CIniFile::FileExist()
     return false;
 }
 
-bool CIniFile::Create()
+bool IniFile::Create()
 {
     if (FileExist())
         return true;
@@ -203,7 +203,7 @@ bool CIniFile::Create()
     return Save();										                    // Save
 }
 
-list<string> CIniFile::GetSectionNames()
+list<string> IniFile::GetSectionNames()
 {
     list<string> data;														// Holds the return data
     list<Record>& content = m_content;										// Holds the current record
@@ -221,7 +221,7 @@ list<string> CIniFile::GetSectionNames()
     return data;															// Return the data
 }
 
-list<CIniFile::Record> CIniFile::GetSections()
+list<IniFile::Record> IniFile::GetSections()
 {
     list<Record> data;														// Holds the return data
     list<Record>& content = m_content;										// Holds the current record
@@ -239,7 +239,7 @@ list<CIniFile::Record> CIniFile::GetSections()
     return data;															// Return the data
 }
 
-list<CIniFile::Record> CIniFile::GetSection(const string& SectionName)
+list<IniFile::Record> IniFile::GetSection(const string& SectionName)
 {
     list<Record> data;														// Holds the return data
     list<Record>& content = m_content;										// Holds the current record
@@ -258,7 +258,7 @@ list<CIniFile::Record> CIniFile::GetSection(const string& SectionName)
     return data;															// Return the data
 }
 
-list<CIniFile::Record> CIniFile::GetRecord(const string& KeyName, const string& SectionName)
+list<IniFile::Record> IniFile::GetRecord(const string& KeyName, const string& SectionName)
 {
     list<Record> data;														// Holds the return data
     list<Record>& content = m_content;										// Holds the current record
@@ -267,7 +267,7 @@ list<CIniFile::Record> CIniFile::GetRecord(const string& KeyName, const string& 
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            CIniFile::RecordSectionKeyIs(SectionName, KeyName));		    // Locate the Record
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));		    // Locate the Record
 
         if (iter == content.end())
             return data;								                    // The Record was not found
@@ -277,7 +277,7 @@ list<CIniFile::Record> CIniFile::GetRecord(const string& KeyName, const string& 
     return data;															// Return the Record
 }
 
-string CIniFile::GetValue(const string& KeyName, const string& SectionName)
+string IniFile::GetValue(const string& KeyName, const string& SectionName)
 {
     list<Record> record = GetRecord(KeyName, SectionName);	            	// Get the Record
 
@@ -287,7 +287,7 @@ string CIniFile::GetValue(const string& KeyName, const string& SectionName)
     return "";																// No value was found
 }
 
-string CIniFile::Content()
+string IniFile::Content()
 {
     string s = "";															// Hold our return string
     list<Record>& content = m_content;										// Holds the current record
@@ -316,7 +316,7 @@ string CIniFile::Content()
     return "";
 }
 
-bool CIniFile::SectionExists(const string& SectionName)
+bool IniFile::SectionExists(const string& SectionName)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -324,7 +324,7 @@ bool CIniFile::SectionExists(const string& SectionName)
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            CIniFile::RecordSectionIs(SectionName));					    // Locate the Section
+            IniFile::RecordSectionIs(SectionName));					    // Locate the Section
 
         if (iter == content.end())
             return false;							                        // The Section was not found
@@ -335,7 +335,7 @@ bool CIniFile::SectionExists(const string& SectionName)
     return true;															// The Section was found
 }
 
-bool CIniFile::RecordExists(const string& KeyName, const string& SectionName)
+bool IniFile::RecordExists(const string& KeyName, const string& SectionName)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -343,7 +343,7 @@ bool CIniFile::RecordExists(const string& KeyName, const string& SectionName)
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
@@ -354,7 +354,7 @@ bool CIniFile::RecordExists(const string& KeyName, const string& SectionName)
     return true;															// The Section/Key was found
 }
 
-bool CIniFile::AddSection(const string& SectionName, bool Saving/* = true*/)
+bool IniFile::AddSection(const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -380,7 +380,7 @@ bool CIniFile::AddSection(const string& SectionName, bool Saving/* = true*/)
     return false;															// The file did not open
 }
 
-bool CIniFile::SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving/* = true*/)
+bool IniFile::SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -409,7 +409,7 @@ bool CIniFile::SetValue(const string& KeyName, const string& Value, const string
            
 			list<Record>::reverse_iterator r_iter = find_if(
 				content.rbegin(), content.rend(),
-                CIniFile::RecordSectionIs(SectionName));					// Locate the Section
+                IniFile::RecordSectionIs(SectionName));					// Locate the Section
 			list<Record>::iterator iter =  r_iter.base();
             content.insert(iter,r);											// Add the record
 			
@@ -421,7 +421,7 @@ bool CIniFile::SetValue(const string& KeyName, const string& Value, const string
 
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Record
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Record
 
         iter->Value = Value;												// Insert the correct value
         
@@ -434,7 +434,7 @@ bool CIniFile::SetValue(const string& KeyName, const string& Value, const string
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::DeleteSection(const string& SectionName, bool Saving/* = true*/)
+bool IniFile::DeleteSection(const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -442,7 +442,7 @@ bool CIniFile::DeleteSection(const string& SectionName, bool Saving/* = true*/)
     {
 		list<Record>::iterator new_end = remove_if(
 			content.begin(), content.end(),
-			CIniFile::RecordSectionIs(SectionName));
+			IniFile::RecordSectionIs(SectionName));
 		content.erase(new_end, content.end());
 
 		if (Saving)
@@ -454,7 +454,7 @@ bool CIniFile::DeleteSection(const string& SectionName, bool Saving/* = true*/)
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, bool Saving/* = true*/)
+bool IniFile::DeleteRecord(const string& KeyName, const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -462,7 +462,7 @@ bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, bo
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
@@ -478,7 +478,7 @@ bool CIniFile::DeleteRecord(const string& KeyName, const string& SectionName, bo
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving/* = true*/)
+bool IniFile::RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -500,10 +500,10 @@ bool CIniFile::RenameSection(const string& OldSectionName, const string& NewSect
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::Sort(bool Descending, bool Saving/* = true*/)
+bool IniFile::Sort(bool Descending, bool Saving/* = true*/)
 {
-    list<CIniFile::Record> content;											// Used to hold the sorted content
-    list<CIniFile::Record> sections = GetSections();			            // Get a list of Sections
+    list<IniFile::Record> content;											// Used to hold the sorted content
+    list<IniFile::Record> sections = GetSections();			            // Get a list of Sections
 
     if (!sections.empty())													// Is there anything to process?
     {
@@ -517,7 +517,7 @@ bool CIniFile::Sort(bool Descending, bool Saving/* = true*/)
         {
             content.push_back(*iter);										// Add the sorted Section to the content
 
-            list<CIniFile::Record> records = GetSection(iter->Section);		// Get a list of Records for this section
+            list<IniFile::Record> records = GetSection(iter->Section);		// Get a list of Records for this section
 
             if (Descending)												    // Descending or Ascending?
 				records.sort(DescendingRecordSort());
@@ -541,7 +541,7 @@ bool CIniFile::Sort(bool Descending, bool Saving/* = true*/)
     return false;															// There were no sections
 }
 
-bool CIniFile::SetSectionComments(const string& Comments, const string& SectionName, bool Saving/* = true*/)
+bool IniFile::SetSectionComments(const string& Comments, const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -573,7 +573,7 @@ bool CIniFile::SetSectionComments(const string& Comments, const string& SectionN
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving/* = true*/)
+bool IniFile::SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -581,7 +581,7 @@ bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, 
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
@@ -604,7 +604,7 @@ bool CIniFile::SetRecordComments(const string& Comments, const string& KeyName, 
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::CommentSection(char CommentChar, const string& SectionName, bool Saving/* = true*/)
+bool IniFile::CommentSection(char CommentChar, const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -625,7 +625,7 @@ bool CIniFile::CommentSection(char CommentChar, const string& SectionName, bool 
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving/* = true*/)
+bool IniFile::CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -633,7 +633,7 @@ bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
@@ -649,7 +649,7 @@ bool CIniFile::CommentRecord(CommentChar cc, const string& KeyName, const string
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::UnCommentSection(const string& SectionName, bool Saving/* = true*/)
+bool IniFile::UnCommentSection(const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -671,7 +671,7 @@ bool CIniFile::UnCommentSection(const string& SectionName, bool Saving/* = true*
     return false;															// In the event the file does not load
 }
 
-bool CIniFile::UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving/* = true*/)
+bool IniFile::UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving/* = true*/)
 {
     list<Record>& content = m_content;										// Holds the current record
 
@@ -679,7 +679,7 @@ bool CIniFile::UnCommentRecord(const string& KeyName, const string& SectionName,
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            CIniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found

@@ -24,7 +24,7 @@ static out_type convert(const in_value& t)
 }
 
 
-class CIniFile
+class IniFile
 {
 public:
 	typedef std::string string;
@@ -44,8 +44,8 @@ public:
 		SemiColon = ';'
 	};
 
-	CIniFile(void);
-	CIniFile(const string& FileName);
+	IniFile(void);
+	IniFile(const string& FileName);
 
 public:
 	void SetFileName(const string& FileName);

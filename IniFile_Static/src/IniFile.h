@@ -24,7 +24,7 @@ static out_type convert(const in_value& t)
 }
 
 
-class CIniFile
+class IniFile
 {
 public:
 	typedef std::string string;
