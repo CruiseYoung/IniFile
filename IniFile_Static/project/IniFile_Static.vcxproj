@@ -11,11 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\IniFile.cpp" />
+    <ClCompile Include="..\src\inifile.cpp" />
     <ClCompile Include="..\test\TestIniFile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\IniFile.h" />
+    <ClInclude Include="..\src\inifile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />

@@ -1,6 +1,6 @@
 // TestCIniFile::cpp : Defines the entry point for the console application.
 //
-#include "../src/IniFile.h"
+#include "../src/inifile.h"
 #include <iostream>
 
 using namespace std;
