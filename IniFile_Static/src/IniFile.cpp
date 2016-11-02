@@ -2,6 +2,7 @@
 #include <fstream>
 #include <algorithm>
 #include <sys/stat.h>
+#include <cctype>
 
 using std::list;
 using std::string;
@@ -37,22 +38,22 @@ void Trim(string& str, const string & ChrsToTrim = " \t\n\r", int TrimDir = 0)
     if (TrimDir != 1)
         str = str.substr(0, str.find_last_not_of(ChrsToTrim) + 1);
 
-	// Trim whitespace from both sides of '='
-	if (str.at(0) != '#')
-		str = replace_all(str, " ", "");
-	if (str.at(0) != '#')
-		str = replace_all(str, "\t", "");
+	//// Trim whitespace from both sides of '='
+	//if ((str.at(0) != '#') && (str.at(0) != ';'))
+	//	str = replace_all(str, " ", "");
+	//if ((str.at(0) != '#') && (str.at(0) != ';'))
+	//	str = replace_all(str, "\t", "");
 }
 
-//inline void TrimRight(string& str, const string & ChrsToTrim = " \t\n\r")
-//{
-//    Trim(str, ChrsToTrim, 2);
-//}
+inline void TrimRight(string& str, const string & ChrsToTrim = " \t\n\r")
+{
+    Trim(str, ChrsToTrim, 2);
+}
 
-//inline void TrimLeft(string& str, const string & ChrsToTrim = " \t\n\r")
-//{
-//    Trim(str, ChrsToTrim, 1);
-//}
+inline void TrimLeft(string& str, const string & ChrsToTrim = " \t\n\r")
+{
+    Trim(str, ChrsToTrim, 1);
+}
 
 // A function to transform a string to uppercase if neccessary
 //void UCase(string& str, bool ucase)
@@ -60,6 +61,40 @@ void Trim(string& str, const string & ChrsToTrim = " \t\n\r", int TrimDir = 0)
 //	if(ucase)
 //		transform(str.begin(), str.end(), str.begin(), toupper);
 //}
+
+inline bool IsSection(string s)
+{
+	if (s.empty() || s[0] != '[' || s[s.size() - 1] != ']')
+	{
+		return false;
+	}
+
+	for (unsigned int i=1; i<s.size()-1; ++i)
+	{
+		if (ispunct(s[i]) && s[i] != '_')
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+inline bool IsRecord(string s)
+{
+	if (s.empty())
+	{
+		return false;
+	}
+
+	string::size_type pos = s.find('=');
+	if (pos == string::npos || pos == 0)
+	{
+		return false;
+	}
+
+	return true;
+}
 
 bool IniFile::Load(const string& FileName, list<Record>& content)
 {
@@ -80,11 +115,17 @@ bool IniFile::Load(const string& FileName, list<Record>& content)
         {
             Record r;														// Define a new record
 
+			bool isComment = false;
             if ((s[0] == '#') || (s[0] == ';'))								// Is this a commented line?
             {
-                if ((s.find('[') == string::npos) 							// If there is no [ or =
-                    && (s.find('=') == string::npos))						// Then it's a comment
+				string sub = s.substr(1);
+				Trim(sub);
+				if (!(IsSection(sub) || IsRecord(sub)))
+
+            	//if ((s.find('[') == string::npos) 						// If there is no [ or =
+                //    && (s.find('=') == string::npos))						// Then it's a comment
                 {
+					isComment = true;
                     comments += s + '\n';									// Add the comment to the current comments string
                 }
                 else
@@ -97,26 +138,32 @@ bool IniFile::Load(const string& FileName, list<Record>& content)
             else
 				r.Commented = ' ';										    // else mark it as not being a comment
 
-            if (s.find('[') != string::npos)								// Is this line a section?
+            if (!isComment)
             {
-                s.erase(s.begin());											// Erase the leading bracket
-                s.erase(s.find(']'));										// Erase the trailing bracket
-                r.Comments = comments;									    // Add the comments string (if any)
-                comments = "";												// Clear the comments for re-use
-                r.Section = s;												// Set the Section value
-                r.Key = "";													// Set the Key value
-                r.Value = "";												// Set the Value value
-                CurrentSection = s;
-            }
+				if(s.find('[') != string::npos)								// Is this line a section?
+				{
+					s.erase(s.begin());										// Erase the leading bracket
+					s.erase(s.find(']'));									// Erase the trailing bracket
+					r.Comments = comments;									// Add the comments string (if any)
+					comments = "";											// Clear the comments for re-use
+					Trim(s);
+					r.Section = s;											// Set the Section value
+					r.Key = "";												// Set the Key value
+					r.Value = "";											// Set the Value value
+					CurrentSection = s;
+				}
 
-            if (s.find('=') != string::npos)								// Is this line a Key/Value?
-            {
-                r.Comments = comments;									    // Add the comments string (if any)
-                comments = "";												// Clear the comments for re-use
-                r.Section = CurrentSection;								    // Set the section to the current Section
-                r.Key = s.substr(0, s.find('='));							// Set the Key value to everything before the = sign
-                r.Value = s.substr(s.find('=') + 1);						// Set the Value to everything after the = sign
-            }
+				if (s.find('=') != string::npos)							// Is this line a Key/Value?
+				{
+					r.Comments = comments;									// Add the comments string (if any)
+					comments = "";											// Clear the comments for re-use
+					r.Section = CurrentSection;								// Set the section to the current Section
+					r.Key = s.substr(0, s.find('='));						// Set the Key value to everything before the = sign
+					Trim(r.Key);
+					r.Value = s.substr(s.find('=') + 1);					// Set the Value to everything after the = sign
+					Trim(r.Value);
+				}
+			}
 
             if (comments == "")											    // Don't add a record yet if its a comment line
                 content.push_back(r);										// Add the record to content
@@ -233,7 +280,7 @@ list<IniFile::Record> IniFile::GetRecord(const string& KeyName, const string& Se
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            IniFile::RecordSectionKeyIs(SectionName, KeyName));		    // Locate the Record
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));		    	// Locate the Record
 
         if (iter == content.end())
             return data;								                    // The Record was not found
@@ -290,7 +337,7 @@ bool IniFile::SectionExists(const string& SectionName, const string& FileName)
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            IniFile::RecordSectionIs(SectionName));					    // Locate the Section
+            IniFile::RecordSectionIs(SectionName));					    	// Locate the Section
 
         if (iter == content.end())
             return false;							                        // The Section was not found
@@ -309,7 +356,7 @@ bool IniFile::RecordExists(const string& KeyName, const string& SectionName, con
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        	// Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
@@ -369,7 +416,7 @@ bool IniFile::SetValue(const string& KeyName, const string& Value, const string&
            
 			list<Record>::reverse_iterator r_iter = find_if(
 				content.rbegin(), content.rend(),
-                IniFile::RecordSectionIs(SectionName));					// Locate the Section
+                IniFile::RecordSectionIs(SectionName));						// Locate the Section
 			list<Record>::iterator iter =  r_iter.base();
             content.insert(iter,r);											// Add the record
 			
@@ -378,7 +425,7 @@ bool IniFile::SetValue(const string& KeyName, const string& Value, const string&
 
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Record
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        	// Locate the Record
 
         iter->Value = Value;												// Insert the correct value
         
@@ -413,7 +460,7 @@ bool IniFile::DeleteRecord(const string& KeyName, const string& SectionName, con
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        	// Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
@@ -449,7 +496,7 @@ bool IniFile::RenameSection(const string& OldSectionName, const string& NewSecti
 bool IniFile::Sort(const string& FileName, bool Descending)
 {
     list<IniFile::Record> content;											// Used to hold the sorted content
-    list<IniFile::Record> sections = GetSections(FileName);			    // Get a list of Sections
+    list<IniFile::Record> sections = GetSections(FileName);			    	// Get a list of Sections
 
     if (!sections.empty())													// Is there anything to process?
     {
@@ -564,7 +611,7 @@ bool IniFile::CommentRecord(CommentChar cc, const string& KeyName, const string&
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        	// Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
@@ -604,7 +651,7 @@ bool IniFile::UnCommentRecord(const string& KeyName, const string& SectionName, 
     {
         list<Record>::iterator iter = find_if(
 			content.begin(), content.end(),
-            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        // Locate the Section/Key
+            IniFile::RecordSectionKeyIs(SectionName, KeyName));	        	// Locate the Section/Key
 
         if (iter == content.end())
             return false;							                        // The Section/Key was not found
