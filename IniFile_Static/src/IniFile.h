@@ -4,18 +4,19 @@
 #include <sstream>
 #pragma warning(disable:4786)
 
+// convert Source to Target
 template <typename Target_t=std::string, typename Source_t = std::string>
-static Target_t convert(const Source_t& arg)
+static Target_t convert(Source_t const& arg)
 {
     std::stringstream interpreter;
     Target_t result;
 
-    if (   !(interpreter << arg)                // 将arg写入流
-        || !(interpreter >> result)             // 从流读取结果
-        || !(interpreter >> std::ws).eof()      // 流中还有剩余内容？
+    if (   !(interpreter << arg)                // write arg into stream
+        || !(interpreter >> result)             // read result from stream
+        || !(interpreter >> std::ws).eof()      // stuff left in stream?
         )
     {
-        // 失败
+        // failed.
         //throw std::runtime_error("convert<> failed.");
     }
     interpreter.clear();
