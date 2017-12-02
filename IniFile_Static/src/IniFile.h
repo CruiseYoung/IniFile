@@ -1,32 +1,27 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <vector>
 #include <sstream>
 #pragma warning(disable:4786)
 
-template <class out_type, class in_value>
-static out_type convert(const in_value& t)
+template <typename Target_t=std::string, typename Source_t = std::string>
+static Target_t convert(const Source_t& arg)
 {
-    out_type result;
+    std::stringstream interpreter;
+    Target_t result;
 
-    try
+    if (   !(interpreter << arg)                // 将arg写入流
+        || !(interpreter >> result)             // 从流读取结果
+        || !(interpreter >> std::ws).eof()      // 流中还有剩余内容？
+        )
     {
-        std::stringstream stream;
-        stream << t;
-        stream >> result;
-        if ((stream >> std::ws).eof())
-        {
-            // 成功
-        }
-        stream.clear();
+        // 失败
+        //throw std::runtime_error("convert<> failed.");
     }
-    catch (...)
-    {
-    }
+    interpreter.clear();
 
     return result;
 }
-
 
 class IniFile
 {
@@ -48,46 +43,46 @@ public:
         SemiColon = ';'
     };
 
-    static bool FileExist(const string& FileName);
-    static bool Create(const string& FileName);
+    static bool FileExist(string const& FileName);
+    static bool Create(string const& FileName);
 
-    static std::vector<string> GetSectionNames(const string& FileName);
-    static std::vector<Record> GetSection(const string& SectionName, const string& FileName);
-    static std::vector<Record> GetRecord(const string& KeyName, const string& SectionName, const string& FileName);
-    static string GetValue(const string& KeyName, const string& SectionName, const string& FileName, const string& DefValue = "");
-    static string Content(const string& FileName);
+    static std::vector<string> GetSectionNames(string const& FileName);
+    static std::vector<Record> GetSection(string const& SectionName, string const& FileName);
+    static std::vector<Record> GetRecord(string const& KeyName, string const& SectionName, string const& FileName);
+    static string GetValue(string const& KeyName, string const& SectionName, string const& FileName, string const& DefValue = "");
+    static string Content(string const& FileName);
 
-    static bool SectionExists(const string& SectionName, const string& FileName);
-    static bool RecordExists(const string& KeyName, const string& SectionName, const string& FileName);
+    static bool SectionExists(string const& SectionName, string const& FileName);
+    static bool RecordExists(string const& KeyName, string const& SectionName, string const& FileName);
 
-    static bool AddSection(const string& SectionName, const string& FileName);
-    static bool SetValue(const string& KeyName, const string& Value, const string& SectionName, const string& FileName);
+    static bool AddSection(string const& SectionName, string const& FileName);
+    static bool SetValue(string const& KeyName, string const& Value, string const& SectionName, string const& FileName);
 
-    static bool DeleteSection(const string& SectionName, const string& FileName);
-    static bool DeleteRecord(const string& KeyName, const string& SectionName, const string& FileName);
+    static bool DeleteSection(string const& SectionName, string const& FileName);
+    static bool DeleteRecord(string const& KeyName, string const& SectionName, string const& FileName);
 
-    static bool RenameSection(const string& OldSectionName, const string& NewSectionName, const string& FileName);
-    static bool Sort(const string& FileName, bool Descending);
+    static bool RenameSection(string const& OldSectionName, string const& NewSectionName, string const& FileName);
+    static bool Sort(string const& FileName, bool Descending);
 
-    static bool SetSectionComments(const string& Comments, const string& SectionName, const string& FileName);
-    static bool SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, const string& FileName);
+    static bool SetSectionComments(string const& Comments, string const& SectionName, string const& FileName);
+    static bool SetRecordComments(string const& Comments, string const& KeyName, string const& SectionName, string const& FileName);
 
-    static bool CommentSection(char CommentChar, const string& SectionName, const string& FileName);
-    static bool CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, const string& FileName);
+    static bool CommentSection(char CommentChar, string const& SectionName, string const& FileName);
+    static bool CommentRecord(CommentChar cc, string const& KeyName, string const& SectionName, string const& FileName);
 
-    static bool UnCommentSection(const string& SectionName, const string& FileName);
-    static bool UnCommentRecord(const string& KeyName, const string& SectionName, const string& FileName);
+    static bool UnCommentSection(string const& SectionName, string const& FileName);
+    static bool UnCommentRecord(string const& KeyName, string const& SectionName, string const& FileName);
 
 private:
-    static std::vector<Record> GetSections(const string& FileName);
-    static bool Load(const string& FileName, std::vector<Record>& content);
-    static bool Save(const string& FileName, std::vector<Record>& content);
+    static std::vector<Record> GetSections(string const& FileName);
+    static bool Load(string const& FileName, std::vector<Record>& content);
+    static bool Save(string const& FileName, std::vector<Record>& content);
 
     struct RecordSectionIs : std::unary_function<Record, bool>
     {
         string section_;
 
-        RecordSectionIs(const string& section): section_(section)
+        RecordSectionIs(string const& section): section_(section)
         {
         }
 
@@ -102,7 +97,7 @@ private:
         string section_;
         string key_;
 
-        RecordSectionKeyIs(const string& section, const string& key): section_(section), key_(key)
+        RecordSectionKeyIs(string const& section, string const& key): section_(section), key_(key)
         {
         }
 
@@ -114,7 +109,7 @@ private:
 
     struct AscendingSectionSort
     {
-        bool operator()(Record& Start, Record& End) const
+        bool operator()(const Record& Start, const Record& End) const
         {
             return Start.Section < End.Section;
         }
@@ -122,7 +117,7 @@ private:
 
     struct DescendingSectionSort
     {
-        bool operator()(Record& Start, Record& End) const
+        bool operator()(const Record& Start, const Record& End) const
         {
             return Start.Section > End.Section;
         }
@@ -130,7 +125,7 @@ private:
 
     struct AscendingRecordSort
     {
-        bool operator()(Record& Start, Record& End) const
+        bool operator()(const Record& Start, const Record& End) const
         {
             return Start.Key < End.Key;
         }
@@ -138,7 +133,7 @@ private:
 
     struct DescendingRecordSort
     {
-        bool operator()(Record& Start, Record& End) const
+        bool operator()(const Record& Start, const Record& End) const
         {
             return Start.Key > End.Key;
         }

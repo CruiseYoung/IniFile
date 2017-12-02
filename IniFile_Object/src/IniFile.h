@@ -1,32 +1,27 @@
-#pragma once
+﻿#pragma once
 #include <string>
 #include <vector>
 #include <sstream>
 #pragma warning(disable:4786)
 
-template <class out_type, class in_value>
-static out_type convert(const in_value& t)
+template <typename Target_t=std::string, typename Source_t = std::string>
+static Target_t convert(const Source_t& arg)
 {
-    out_type result;
+    std::stringstream interpreter;
+    Target_t result;
 
-    try
+    if (   !(interpreter << arg)                // 将arg写入流
+        || !(interpreter >> result)             // 从流读取结果
+        || !(interpreter >> std::ws).eof()      // 流中还有剩余内容？
+        )
     {
-        std::stringstream stream;
-        stream << t;
-        stream >> result;
-        if ((stream >> std::ws).eof())
-        {
-            // �ɹ�
-        }
-        stream.clear();
+        // 失败
+        //throw std::runtime_error("convert<> failed.");
     }
-    catch (...)
-    {
-    }
+    interpreter.clear();
 
     return result;
 }
-
 
 class IniFile
 {
@@ -49,40 +44,40 @@ public:
     };
 
     IniFile(void);
-    IniFile(const string& FileName);
+    IniFile(string const& FileName);
 
 public:
-    void SetFileName(const string& FileName);
+    void SetFileName(string const& FileName);
 
     bool FileExist();
     bool Create();
 
     std::vector<string> GetSectionNames();
-    std::vector<Record> GetSection(const string& SectionName);
-    std::vector<Record> GetRecord(const string& KeyName, const string& SectionName);
-    string GetValue(const string& KeyName, const string& SectionName, const string& DefValue = "");
+    std::vector<Record> GetSection(string const& SectionName);
+    std::vector<Record> GetRecord(string const& KeyName, string const& SectionName);
+    string GetValue(string const& KeyName, string const& SectionName, string const& DefValue = "");
     string Content();
 
-    bool SectionExists(const string& SectionName);
-    bool RecordExists(const string& KeyName, const string& SectionName);
+    bool SectionExists(string const& SectionName);
+    bool RecordExists(string const& KeyName, string const& SectionName);
 
-    bool AddSection(const string& SectionName, bool Saving = true);
-    bool SetValue(const string& KeyName, const string& Value, const string& SectionName, bool Saving = true);
+    bool AddSection(string const& SectionName, bool Saving = true);
+    bool SetValue(string const& KeyName, string const& Value, string const& SectionName, bool Saving = true);
 
-    bool DeleteSection(const string& SectionName, bool Saving = true);
-    bool DeleteRecord(const string& KeyName, const string& SectionName, bool Saving = true);
+    bool DeleteSection(string const& SectionName, bool Saving = true);
+    bool DeleteRecord(string const& KeyName, string const& SectionName, bool Saving = true);
 
-    bool RenameSection(const string& OldSectionName, const string& NewSectionName, bool Saving = true);
+    bool RenameSection(string const& OldSectionName, string const& NewSectionName, bool Saving = true);
     bool Sort(bool Descending, bool Saving = true);
 
-    bool SetSectionComments(const string& Comments, const string& SectionName, bool Saving = true);
-    bool SetRecordComments(const string& Comments, const string& KeyName, const string& SectionName, bool Saving = true);
+    bool SetSectionComments(string const& Comments, string const& SectionName, bool Saving = true);
+    bool SetRecordComments(string const& Comments, string const& KeyName, string const& SectionName, bool Saving = true);
 
-    bool CommentSection(char CommentChar, const string& SectionName, bool Saving = true);
-    bool CommentRecord(CommentChar cc, const string& KeyName, const string& SectionName, bool Saving = true);
+    bool CommentSection(char CommentChar, string const& SectionName, bool Saving = true);
+    bool CommentRecord(CommentChar cc, string const& KeyName, string const& SectionName, bool Saving = true);
 
-    bool UnCommentSection(const string& SectionName, bool Saving = true);
-    bool UnCommentRecord(const string& KeyName, const string& SectionName, bool Saving = true);
+    bool UnCommentSection(string const& SectionName, bool Saving = true);
+    bool UnCommentRecord(string const& KeyName, string const& SectionName, bool Saving = true);
 
     bool Save();
 
@@ -94,7 +89,7 @@ private:
     {
         string section_;
 
-        RecordSectionIs(const string& section): section_(section)
+        RecordSectionIs(string const& section): section_(section)
         {
         }
 
@@ -109,7 +104,7 @@ private:
         string section_;
         string key_;
 
-        RecordSectionKeyIs(const string& section, const string& key): section_(section), key_(key)
+        RecordSectionKeyIs(string const& section, string const& key): section_(section), key_(key)
         {
         }
 
@@ -121,7 +116,7 @@ private:
 
     struct AscendingSectionSort
     {
-        bool operator()(Record& Start, Record& End) const
+        bool operator()(const Record& Start, const Record& End) const
         {
             return Start.Section < End.Section;
         }
@@ -129,7 +124,7 @@ private:
 
     struct DescendingSectionSort
     {
-        bool operator()(Record& Start, Record& End) const
+        bool operator()(const Record& Start, const Record& End) const
         {
             return Start.Section > End.Section;
         }
@@ -137,7 +132,7 @@ private:
 
     struct AscendingRecordSort
     {
-        bool operator()(Record& Start, Record& End) const
+        bool operator()(const Record& Start, const Record& End) const
         {
             return Start.Key < End.Key;
         }
@@ -145,7 +140,7 @@ private:
 
     struct DescendingRecordSort
     {
-        bool operator()(Record& Start, Record& End) const
+        bool operator()(const Record& Start, const Record& End) const
         {
             return Start.Key > End.Key;
         }

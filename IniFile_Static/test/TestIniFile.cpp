@@ -5,7 +5,7 @@
 
 using namespace std;
 
-void Show(const string& FileName)
+void Show(string const& FileName)
 {
     cout << endl
         << "++++++++++++++++++++++++++++++++++++++++"
