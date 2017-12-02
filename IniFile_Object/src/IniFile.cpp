@@ -1,4 +1,4 @@
-﻿#include "inifile.h"
+#include "inifile.h"
 #include <fstream>
 #include <algorithm>
 #include <iterator>
