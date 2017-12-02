@@ -127,7 +127,7 @@ static bool IsValidKeyValue(string const& s)
 
     for (unsigned int i = 0; i < s.size(); ++i)
     {
-        if (/*ispunct(s[i])*/s[i] > 0 && !isalnum(s[i]) && s[i] != '_')
+        if (/*ispunct(s[i])*/s[i] >= 0 && !isalnum(s[i]) && s[i] != '_')
         {
             return false;
         }
@@ -162,9 +162,6 @@ static bool IsRecord(string const& s)
         return false;
     }
 
-    return true;
-
-#if 0
     string s_key = s.substr(0, pos);
     TrimRight(s_key);
 
@@ -177,7 +174,6 @@ static bool IsRecord(string const& s)
     TrimLeft(s_value);
 
     return IsValidKeyValue(s_value);
-#endif
 }
 
 bool IniFile::Load(string const& FileName, vector<Record>& content)
@@ -747,7 +743,7 @@ bool IniFile::SetRecordComments(string const& Comments, string const& KeyName, s
         return false;
     }
 
-    assert(!Comments.empty());
+    //assert(!Comments.empty());
     string comments = Comments;
     if (Comments.size() >= 2)                                               // Is there a comment?
     {
