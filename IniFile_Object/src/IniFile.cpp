@@ -168,7 +168,7 @@ static bool IsRecord(string const& s)
 
     if (!IsValidKeyValue(s_key))
     {
-        false;
+        return false;
     }
 
     string s_value = s.substr(pos + 1);
